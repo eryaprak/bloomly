@@ -1,0 +1,543 @@
+{
+  "id": 49,
+  "rows": 7,
+  "cols": 8,
+  "colors": [
+    "red",
+    "pink",
+    "purple",
+    "yellow",
+    "green",
+    "blue"
+  ],
+  "petals": [
+    {
+      "id": "p_49_0",
+      "color": "yellow",
+      "row": 6,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_1",
+      "color": "red",
+      "row": 1,
+      "col": 3,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_2",
+      "color": "pink",
+      "row": 0,
+      "col": 5,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_3",
+      "color": "purple",
+      "row": 5,
+      "col": 0,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_4",
+      "color": "pink",
+      "row": 2,
+      "col": 3,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_5",
+      "color": "purple",
+      "row": 5,
+      "col": 7,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_6",
+      "color": "blue",
+      "row": 6,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_7",
+      "color": "yellow",
+      "row": 0,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_8",
+      "color": "red",
+      "row": 2,
+      "col": 4,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_9",
+      "color": "pink",
+      "row": 5,
+      "col": 5,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_10",
+      "color": "red",
+      "row": 1,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_11",
+      "color": "blue",
+      "row": 0,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_12",
+      "color": "purple",
+      "row": 0,
+      "col": 0,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_13",
+      "color": "purple",
+      "row": 3,
+      "col": 7,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_14",
+      "color": "yellow",
+      "row": 3,
+      "col": 6,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_15",
+      "color": "red",
+      "row": 2,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_16",
+      "color": "green",
+      "row": 1,
+      "col": 5,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_17",
+      "color": "yellow",
+      "row": 5,
+      "col": 6,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_18",
+      "color": "purple",
+      "row": 6,
+      "col": 6,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_19",
+      "color": "blue",
+      "row": 0,
+      "col": 3,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_20",
+      "color": "green",
+      "row": 4,
+      "col": 5,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_21",
+      "color": "green",
+      "row": 3,
+      "col": 4,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_22",
+      "color": "pink",
+      "row": 6,
+      "col": 4,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_23",
+      "color": "blue",
+      "row": 1,
+      "col": 7,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_24",
+      "color": "pink",
+      "row": 2,
+      "col": 7,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_25",
+      "color": "blue",
+      "row": 0,
+      "col": 7,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_26",
+      "color": "blue",
+      "row": 1,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_27",
+      "color": "yellow",
+      "row": 6,
+      "col": 3,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_28",
+      "color": "green",
+      "row": 2,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_29",
+      "color": "blue",
+      "row": 1,
+      "col": 0,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_30",
+      "color": "blue",
+      "row": 2,
+      "col": 5,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_31",
+      "color": "blue",
+      "row": 5,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_32",
+      "color": "yellow",
+      "row": 6,
+      "col": 7,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_33",
+      "color": "green",
+      "row": 6,
+      "col": 5,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_34",
+      "color": "green",
+      "row": 5,
+      "col": 3,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_35",
+      "color": "red",
+      "row": 4,
+      "col": 6,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_36",
+      "color": "purple",
+      "row": 4,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_37",
+      "color": "purple",
+      "row": 4,
+      "col": 0,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_38",
+      "color": "pink",
+      "row": 5,
+      "col": 4,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_39",
+      "color": "red",
+      "row": 1,
+      "col": 6,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_40",
+      "color": "yellow",
+      "row": 2,
+      "col": 0,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_41",
+      "color": "red",
+      "row": 3,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_42",
+      "color": "green",
+      "row": 1,
+      "col": 4,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_43",
+      "color": "yellow",
+      "row": 4,
+      "col": 4,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_44",
+      "color": "purple",
+      "row": 2,
+      "col": 6,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_45",
+      "color": "pink",
+      "row": 5,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_46",
+      "color": "purple",
+      "row": 4,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_47",
+      "color": "pink",
+      "row": 6,
+      "col": 0,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_48",
+      "color": "green",
+      "row": 3,
+      "col": 0,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_49",
+      "color": "green",
+      "row": 4,
+      "col": 3,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_50",
+      "color": "pink",
+      "row": 4,
+      "col": 7,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_51",
+      "color": "red",
+      "row": 3,
+      "col": 5,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_52",
+      "color": "red",
+      "row": 3,
+      "col": 3,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_49_53",
+      "color": "yellow",
+      "row": 0,
+      "col": 6,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    }
+  ],
+  "vases": [
+    {
+      "color": "red",
+      "capacity": 9,
+      "filled": 0,
+      "isBloomed": false
+    },
+    {
+      "color": "pink",
+      "capacity": 9,
+      "filled": 0,
+      "isBloomed": false
+    },
+    {
+      "color": "purple",
+      "capacity": 9,
+      "filled": 0,
+      "isBloomed": false
+    },
+    {
+      "color": "yellow",
+      "capacity": 9,
+      "filled": 0,
+      "isBloomed": false
+    },
+    {
+      "color": "green",
+      "capacity": 9,
+      "filled": 0,
+      "isBloomed": false
+    },
+    {
+      "color": "blue",
+      "capacity": 9,
+      "filled": 0,
+      "isBloomed": false
+    }
+  ],
+  "dockSize": 5,
+  "maxMoves": 55,
+  "obstacles": [],
+  "difficulty": 0.56
+}
