@@ -103,6 +103,11 @@ export default function LevelCompleteScreen() {
           <Animated.Text style={styles.rewardGold}>
             {t('goldReward', { amount: rewardGold })}
           </Animated.Text>
+          {efficiencyBonus > 0 && (
+            <Text style={styles.efficiencyBonus}>
+              {`Kalan hamle: ${movesLeft} → +${efficiencyBonus} 🌼`}
+            </Text>
+          )}
         </View>
 
         {/* Next level button */}
@@ -180,6 +185,13 @@ const styles = StyleSheet.create({
     color: '#FFD700',
     fontSize: 24,
     fontWeight: '800',
+  },
+  efficiencyBonus: {
+    color: '#A0FFB0',
+    fontSize: 13,
+    fontWeight: '600',
+    marginTop: 6,
+    opacity: 0.9,
   },
   nextBtn: {
     backgroundColor: '#7C3AED',
