@@ -1,20 +1,19 @@
 import React, { useMemo, useCallback, useState } from 'react';
 import {
-  Canvas,
-  Image,
-  useImage,
-  Circle,
-  Group,
-  Rect,
-} from '@shopify/react-native-skia';
-import {
-  Dimensions,
-  GestureResponderEvent,
-
   View,
+  Image,
+  Pressable,
   StyleSheet,
+  Dimensions,
   LayoutChangeEvent,
 } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSequence,
+  withTiming,
+  withSpring,
+} from 'react-native-reanimated';
 
 import { useGameStore } from '@/stores/gameStore';
 import { PetalColor } from '@/engine/types';
@@ -24,84 +23,154 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CELL_PADDING = 4;
 const BOARD_PADDING = 16;
 
-function petalAsset(color: PetalColor): number {
-  switch (color) {
-    case 'red':    return require('@assets/petals/petal_red.png');
-    case 'pink':   return require('@assets/petals/petal_pink.png');
-    case 'purple': return require('@assets/petals/petal_purple.png');
-    case 'yellow': return require('@assets/petals/petal_yellow.png');
-    case 'green':  return require('@assets/petals/petal_green.png');
-    case 'blue':   return require('@assets/petals/petal_blue.png');
-  }
-}
-
-const GLOW_COLORS: Record<PetalColor, string> = {
-  red: '#FF4444',
-  pink: '#FF69B4',
-  purple: '#A855F7',
-  yellow: '#FACC15',
-  green: '#22C55E',
-  blue: '#3B82F6',
+const PETAL_SOURCES: Record<PetalColor, any> = {
+  red:    require('@assets/petals/petal_red.png'),
+  pink:   require('@assets/petals/petal_pink.png'),
+  purple: require('@assets/petals/petal_purple.png'),
+  yellow: require('@assets/petals/petal_yellow.png'),
+  green:  require('@assets/petals/petal_green.png'),
+  blue:   require('@assets/petals/petal_blue.png'),
 };
 
-interface GameBoardProps {
-  onBloom?: (color: PetalColor) => void;
-}
+const GLOW_COLORS: Record<PetalColor, string> = {
+  red:    '#FF4444',
+  pink:   '#FF69B4',
+  purple: '#A855F7',
+  yellow: '#FACC15',
+  green:  '#22C55E',
+  blue:   '#3B82F6',
+};
 
-function PetalCell({
-  color,
-  x,
-  y,
-  size,
-  isSelected,
-  iceLayer,
-  isLocked,
-}: {
+// Inner highlight tints for 3D illusion
+const HIGHLIGHT_COLORS: Record<PetalColor, string> = {
+  red:    'rgba(255,160,160,0.35)',
+  pink:   'rgba(255,200,220,0.35)',
+  purple: 'rgba(200,150,255,0.35)',
+  yellow: 'rgba(255,250,150,0.40)',
+  green:  'rgba(150,255,180,0.35)',
+  blue:   'rgba(130,200,255,0.35)',
+};
+
+interface PetalCellProps {
   color: PetalColor;
-  x: number;
-  y: number;
   size: number;
   isSelected: boolean;
   iceLayer: number;
   isLocked: boolean;
-}) {
-  const imgSrc = petalAsset(color);
-  const image = useImage(imgSrc);
+  onPress: () => void;
+}
 
-  if (!image) return null;
+function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: PetalCellProps) {
+  const scale = useSharedValue(1);
+
+  const animStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  const handlePress = useCallback(() => {
+    if (isLocked) return;
+    scale.value = withSequence(
+      withTiming(0.85, { duration: 80 }),
+      withSpring(1, { damping: 12, stiffness: 180 }),
+    );
+    onPress();
+  }, [isLocked, scale, onPress]);
 
   const glowColor = GLOW_COLORS[color];
+  const highlightColor = HIGHLIGHT_COLORS[color];
 
   return (
-    <Group>
-      {isSelected && (
-        <Circle
-          cx={x + size / 2}
-          cy={y + size / 2}
-          r={size / 2 + 4}
-          color={glowColor}
-          opacity={0.4}
+    <Pressable onPress={handlePress} style={{ width: size, height: size }}>
+      <Animated.View style={[{ width: size, height: size }, animStyle]}>
+        {/* Selection glow ring */}
+        {isSelected && (
+          <View
+            style={[
+              StyleSheet.absoluteFill,
+              styles.selectionRing,
+              {
+                borderColor: glowColor,
+                shadowColor: glowColor,
+                borderRadius: size / 2,
+              },
+            ]}
+          />
+        )}
+
+        {/* Drop shadow layer for 3D depth */}
+        <View
+          style={[
+            styles.shadowLayer,
+            {
+              width: size - 4,
+              height: size - 4,
+              borderRadius: (size - 4) / 2,
+              backgroundColor: glowColor,
+              left: 2,
+              top: 4,
+            },
+          ]}
         />
-      )}
-      <Image
-        image={image}
-        x={x}
-        y={y}
-        width={size}
-        height={size}
-        fit="contain"
-      />
-      {iceLayer > 0 && (
-        <Rect x={x} y={y} width={size} height={size} color="#AADDFF" opacity={0.45} />
-      )}
-      {isLocked && (
-        <>
-          <Rect x={x} y={y} width={size} height={size} color="#888888" opacity={0.5} />
-          <Circle cx={x + size / 2} cy={y + size / 2} r={size * 0.18} color="#333333" />
-        </>
-      )}
-    </Group>
+
+        {/* Petal image */}
+        <Image
+          source={PETAL_SOURCES[color]}
+          style={{ width: size, height: size, position: 'absolute' }}
+          resizeMode="contain"
+        />
+
+        {/* Inner highlight for 3D pop */}
+        <View
+          style={[
+            styles.innerHighlight,
+            {
+              width: size * 0.55,
+              height: size * 0.35,
+              borderRadius: size * 0.2,
+              backgroundColor: highlightColor,
+              top: size * 0.1,
+              left: size * 0.2,
+            },
+          ]}
+        />
+
+        {/* Ice overlay */}
+        {iceLayer > 0 && (
+          <View
+            style={[
+              StyleSheet.absoluteFill,
+              styles.iceOverlay,
+              { opacity: iceLayer >= 2 ? 0.65 : 0.42, borderRadius: size * 0.15 },
+            ]}
+          />
+        )}
+
+        {/* Ice crack lines for double ice */}
+        {iceLayer >= 2 && (
+          <View
+            style={[
+              StyleSheet.absoluteFill,
+              styles.iceCrack,
+              { borderRadius: size * 0.15 },
+            ]}
+          />
+        )}
+
+        {/* Lock overlay */}
+        {isLocked && (
+          <View style={[StyleSheet.absoluteFill, styles.lockOverlay, { borderRadius: size * 0.15 }]}>
+            <View style={[styles.lockBody, { width: size * 0.38, height: size * 0.32, borderRadius: size * 0.06 }]}>
+              <View style={[styles.lockShackle, { width: size * 0.22, height: size * 0.2, borderRadius: size * 0.12, borderWidth: size * 0.045 }]} />
+            </View>
+          </View>
+        )}
+      </Animated.View>
+    </Pressable>
   );
+}
+
+interface GameBoardProps {
+  onBloom?: (color: PetalColor) => void;
 }
 
 export default function GameBoard({ onBloom }: GameBoardProps) {
@@ -110,11 +179,9 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
   const isAnimating = useGameStore((s) => s.isAnimating);
   const lastResult = useGameStore((s) => s.lastResult);
 
-  const [selectedCell, setSelectedCell] = React.useState<{ row: number; col: number } | null>(null);
-  // Track actual view width for correct coordinate mapping
+  const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [viewWidth, setViewWidth] = useState<number>(SCREEN_WIDTH);
 
-  // Notify parent about blooms
   React.useEffect(() => {
     if (lastResult?.bloom && onBloom) {
       onBloom(lastResult.bloom);
@@ -126,9 +193,9 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
   const cols = gameState?.level.cols ?? 5;
 
   const cellSize = useMemo(() => {
-    const available = SCREEN_WIDTH - BOARD_PADDING * 2;
+    const available = viewWidth - BOARD_PADDING * 2;
     return Math.floor((available - CELL_PADDING * (cols - 1)) / cols);
-  }, [cols]);
+  }, [cols, viewWidth]);
 
   const boardWidth = useMemo(
     () => cols * cellSize + (cols - 1) * CELL_PADDING,
@@ -139,74 +206,56 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
     [rows, cellSize],
   );
 
-  // boardLeft is relative to the View (not screen), so use viewWidth
-  const boardLeft = useMemo(
-    () => (viewWidth - boardWidth) / 2,
-    [viewWidth, boardWidth],
-  );
-
   const handleLayout = useCallback((e: LayoutChangeEvent) => {
     setViewWidth(e.nativeEvent.layout.width);
   }, []);
 
-  const handleTouch = useCallback(
-    (e: GestureResponderEvent) => {
-      console.log('[TOUCH] fired', { gameState: !!gameState, isAnimating, boardLeft, viewWidth });
+  const handlePetalPress = useCallback(
+    (row: number, col: number) => {
       if (!gameState || isAnimating) return;
-      const touchX = e.nativeEvent.locationX;
-      const touchY = e.nativeEvent.locationY;
-
-      const col = Math.floor((touchX - boardLeft) / (cellSize + CELL_PADDING));
-      const row = Math.floor(touchY / (cellSize + CELL_PADDING));
-      console.log('[TOUCH] coords', { touchX, touchY, row, col, rows, cols });
-
-      if (row < 0 || row >= rows || col < 0 || col >= cols) return;
       if (!board[row]?.[col]) return;
-      console.log('[TOUCH] picking petal at', row, col, board[row][col]?.color);
 
       setSelectedCell({ row, col });
       pickPetal(row, col);
-
       setTimeout(() => setSelectedCell(null), 300);
     },
-    [gameState, isAnimating, boardLeft, cellSize, rows, cols, board, pickPetal],
+    [gameState, isAnimating, board, pickPetal],
   );
 
   if (!gameState) return null;
-
-  // Force Canvas re-mount when board changes (Skia doesn't re-render on child removal)
-  const canvasKey = board.flat().filter(Boolean).map(p => p!.id).join(',');
 
   return (
     <View
       style={[styles.container, { height: boardHeight }]}
       onLayout={handleLayout}
-      onStartShouldSetResponder={() => true}
-      onResponderRelease={handleTouch}
     >
-        <Canvas key={canvasKey} style={{ width: viewWidth, height: boardHeight }} pointerEvents="none">
-          {board.map((rowArr, ri) =>
-            rowArr.map((petal, ci) => {
-              if (!petal) return null;
-              const x = boardLeft + ci * (cellSize + CELL_PADDING);
-              const y = ri * (cellSize + CELL_PADDING);
-              const isSelected =
-                selectedCell?.row === ri && selectedCell?.col === ci;
-              return (
+      {/* Board grid using absolute positioning */}
+      <View style={[styles.boardArea, { width: boardWidth, height: boardHeight }]}>
+        {board.map((rowArr, ri) =>
+          rowArr.map((petal, ci) => {
+            if (!petal) return null;
+            const left = ci * (cellSize + CELL_PADDING);
+            const top = ri * (cellSize + CELL_PADDING);
+            const isSelected = selectedCell?.row === ri && selectedCell?.col === ci;
+
+            return (
+              <View
+                key={petal.id}
+                style={{ position: 'absolute', left, top }}
+              >
                 <PetalCell
-                  key={petal.id}
                   color={petal.color}
-                  x={x}
-                  y={y}
                   size={cellSize}
                   isSelected={isSelected}
                   iceLayer={petal.iceLayer}
                   isLocked={petal.isLocked}
+                  onPress={() => handlePetalPress(ri, ci)}
                 />
-              );
-            }),
-          )}
-        </Canvas>
+              </View>
+            );
+          }),
+        )}
+      </View>
     </View>
   );
 }
@@ -214,5 +263,61 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  boardArea: {
+    position: 'relative',
+  },
+  selectionRing: {
+    position: 'absolute',
+    top: -4,
+    left: -4,
+    right: -4,
+    bottom: -4,
+    borderWidth: 2.5,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  shadowLayer: {
+    position: 'absolute',
+    opacity: 0.28,
+  },
+  innerHighlight: {
+    position: 'absolute',
+    opacity: 1,
+    transform: [{ rotate: '-20deg' }],
+  },
+  iceOverlay: {
+    backgroundColor: '#AADDFF',
+    borderWidth: 1,
+    borderColor: 'rgba(180,230,255,0.7)',
+  },
+  iceCrack: {
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
+    borderColor: 'rgba(200,240,255,0.85)',
+  },
+  lockOverlay: {
+    backgroundColor: 'rgba(40,40,60,0.62)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  lockBody: {
+    backgroundColor: '#888',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 4,
+    overflow: 'visible',
+  },
+  lockShackle: {
+    borderColor: '#888',
+    borderTopWidth: 0,
+    marginTop: -10,
+    backgroundColor: 'transparent',
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
 });
