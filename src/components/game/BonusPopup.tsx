@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
   withSequence,
+  withDelay,
   Easing,
   runOnJS,
 } from 'react-native-reanimated';
@@ -29,9 +30,15 @@ export default function BonusPopup({ bonusType, bonusGold, onDone }: BonusPopupP
   const translateY = useSharedValue(0);
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.7);
+  const onDoneRef = useRef(onDone);
+  onDoneRef.current = onDone;
 
   useEffect(() => {
     if (!bonusType) return;
+
+    const dismiss = () => {
+      onDoneRef.current?.();
+    };
 
     // Reset
     translateY.value = 0;
@@ -43,7 +50,7 @@ export default function BonusPopup({ bonusType, bonusGold, onDone }: BonusPopupP
       withTiming(1, { duration: 200, easing: Easing.out(Easing.back(1.5)) }),
       withTiming(1, { duration: 800 }),
       withTiming(0, { duration: 400 }, (finished) => {
-        if (finished && onDone) runOnJS(onDone)();
+        if (finished) runOnJS(dismiss)();
       }),
     );
     scale.value = withSequence(
@@ -57,7 +64,7 @@ export default function BonusPopup({ bonusType, bonusGold, onDone }: BonusPopupP
       withTiming(-10, { duration: 800 }),
       withTiming(-40, { duration: 400 }),
     );
-  }, [bonusType, bonusGold, translateY, opacity, scale, onDone]);
+  }, [bonusType, bonusGold]);
 
   if (!bonusType) return null;
 
@@ -73,7 +80,7 @@ export default function BonusPopup({ bonusType, bonusGold, onDone }: BonusPopupP
 
   return (
     <Animated.View style={[styles.container, animStyle]}>
-      <Text style={[styles.emoji]}>{cfg.emoji}</Text>
+      <Text style={styles.emoji}>{cfg.emoji}</Text>
       <Text style={[styles.label, { color: cfg.color }]}>{cfg.label}</Text>
       {bonusGold > 0 && (
         <Text style={[styles.gold, { color: cfg.color }]}>+{bonusGold} 🌼</Text>
