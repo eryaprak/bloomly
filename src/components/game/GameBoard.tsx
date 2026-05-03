@@ -174,6 +174,9 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
 
   if (!gameState) return null;
 
+  // Force Canvas re-mount when board changes (Skia doesn't re-render on child removal)
+  const canvasKey = board.flat().filter(Boolean).map(p => p!.id).join(',');
+
   return (
     <View
       style={[styles.container, { height: boardHeight }]}
@@ -181,7 +184,7 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
       onStartShouldSetResponder={() => true}
       onResponderRelease={handleTouch}
     >
-        <Canvas style={{ width: viewWidth, height: boardHeight }} pointerEvents="none">
+        <Canvas key={canvasKey} style={{ width: viewWidth, height: boardHeight }} pointerEvents="none">
           {board.map((rowArr, ri) =>
             rowArr.map((petal, ci) => {
               if (!petal) return null;
