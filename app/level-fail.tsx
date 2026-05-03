@@ -10,6 +10,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import * as Haptics from 'expo-haptics';
 import { usePlayerStore } from '@/stores/playerStore';
+import { useGameStore } from '@/stores/gameStore';
 import '@/i18n';
 
 export default function LevelFailScreen() {
@@ -22,6 +23,7 @@ export default function LevelFailScreen() {
   }>();
 
   const spendGold = usePlayerStore((s) => s.spendGold);
+  const addMoves = useGameStore((s) => s.addMoves);
 
   const levelId_ = parseInt(levelId ?? '1', 10);
   const vasesDone = parseInt(vasesCompleted ?? '0', 10);
@@ -40,13 +42,15 @@ export default function LevelFailScreen() {
   const handleBuyMoves = () => {
     const success = spendGold(100);
     if (success) {
-      router.replace(`/level/${levelId_}`);
+      addMoves(3);
+      router.back();
     }
   };
 
   const handleWatchAd = () => {
-    // Placeholder: rewarded video
-    router.replace(`/level/${levelId_}`);
+    // Placeholder: rewarded video — give moves for free
+    addMoves(3);
+    router.back();
   };
 
   return (

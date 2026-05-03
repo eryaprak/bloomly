@@ -11,6 +11,7 @@ interface GameStore {
   pickPetal: (row: number, col: number) => void;
   setAnimating: (v: boolean) => void;
   resetGame: () => void;
+  addMoves: (n: number) => void;
 }
 
 export const useGameStore = create<GameStore>((set, get) => ({
@@ -32,4 +33,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   setAnimating: (v) => set({ isAnimating: v }),
 
   resetGame: () => set({ gameState: null, lastResult: null, isAnimating: false }),
+
+  addMoves: (n) => {
+    const gameState = get().gameState;
+    if (!gameState) return;
+    set({ gameState: { ...gameState, movesLeft: gameState.movesLeft + n, phase: 'playing' }, lastResult: null });
+  },
 }));
