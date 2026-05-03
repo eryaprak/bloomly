@@ -28,7 +28,7 @@ export interface LevelConfig {
   colors: PetalColor[];
   petals: Petal[];
   vases: Vase[];
-  dockSize: number;     // 3-5
+  dockSize: number;     // 7 (Triple Match 3D style)
   maxMoves: number;
   obstacles: ('ice' | 'lock' | 'thorn')[];
   difficulty: number;   // 0.0 - 1.0

@@ -5,21 +5,31 @@
   "colors": [
     "red",
     "pink",
-    "purple"
+    "purple",
+    "yellow"
   ],
   "petals": [
     {
       "id": "p_4_0",
       "color": "purple",
-      "row": 4,
-      "col": 1,
+      "row": 1,
+      "col": 2,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_4_1",
-      "color": "red",
+      "color": "purple",
+      "row": 0,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_4_2",
+      "color": "purple",
       "row": 3,
       "col": 2,
       "isLocked": false,
@@ -27,19 +37,10 @@
       "isCollected": false
     },
     {
-      "id": "p_4_2",
-      "color": "red",
-      "row": 1,
-      "col": 4,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
       "id": "p_4_3",
-      "color": "red",
+      "color": "pink",
       "row": 1,
-      "col": 1,
+      "col": 3,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
@@ -47,34 +48,34 @@
     {
       "id": "p_4_4",
       "color": "pink",
-      "row": 0,
-      "col": 0,
+      "row": 1,
+      "col": 1,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_4_5",
-      "color": "pink",
-      "row": 3,
-      "col": 3,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
-      "id": "p_4_6",
-      "color": "pink",
-      "row": 2,
+      "color": "red",
+      "row": 4,
       "col": 0,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
-      "id": "p_4_7",
+      "id": "p_4_6",
       "color": "purple",
-      "row": 3,
+      "row": 0,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_4_7",
+      "color": "red",
+      "row": 1,
       "col": 4,
       "isLocked": false,
       "iceLayer": 0,
@@ -82,8 +83,8 @@
     },
     {
       "id": "p_4_8",
-      "color": "purple",
-      "row": 4,
+      "color": "red",
+      "row": 0,
       "col": 3,
       "isLocked": false,
       "iceLayer": 0,
@@ -91,9 +92,9 @@
     },
     {
       "id": "p_4_9",
-      "color": "purple",
-      "row": 1,
-      "col": 0,
+      "color": "red",
+      "row": 2,
+      "col": 3,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
@@ -101,7 +102,7 @@
     {
       "id": "p_4_10",
       "color": "pink",
-      "row": 0,
+      "row": 2,
       "col": 4,
       "isLocked": false,
       "iceLayer": 0,
@@ -109,34 +110,16 @@
     },
     {
       "id": "p_4_11",
-      "color": "red",
-      "row": 3,
-      "col": 1,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
-      "id": "p_4_12",
-      "color": "pink",
-      "row": 0,
-      "col": 3,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
-      "id": "p_4_13",
-      "color": "red",
-      "row": 4,
+      "color": "yellow",
+      "row": 2,
       "col": 0,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
-      "id": "p_4_14",
-      "color": "pink",
+      "id": "p_4_12",
+      "color": "yellow",
       "row": 2,
       "col": 2,
       "isLocked": false,
@@ -144,28 +127,100 @@
       "isCollected": false
     },
     {
-      "id": "p_4_15",
-      "color": "purple",
-      "row": 1,
+      "id": "p_4_13",
+      "color": "yellow",
+      "row": 3,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_4_14",
+      "color": "yellow",
+      "row": 3,
       "col": 3,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
-      "id": "p_4_16",
-      "color": "red",
-      "row": 0,
+      "id": "p_4_15",
+      "color": "purple",
+      "row": 4,
       "col": 2,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
+      "id": "p_4_16",
+      "color": "pink",
+      "row": 2,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
       "id": "p_4_17",
-      "color": "purple",
+      "color": "red",
+      "row": 0,
+      "col": 4,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_4_18",
+      "color": "pink",
       "row": 3,
       "col": 0,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_4_19",
+      "color": "purple",
+      "row": 3,
+      "col": 4,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_4_20",
+      "color": "yellow",
+      "row": 0,
+      "col": 0,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_4_21",
+      "color": "yellow",
+      "row": 4,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_4_22",
+      "color": "red",
+      "row": 1,
+      "col": 0,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_4_23",
+      "color": "pink",
+      "row": 4,
+      "col": 3,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
@@ -189,10 +244,16 @@
       "capacity": 6,
       "filled": 0,
       "isBloomed": false
+    },
+    {
+      "color": "yellow",
+      "capacity": 6,
+      "filled": 0,
+      "isBloomed": false
     }
   ],
-  "dockSize": 3,
+  "dockSize": 7,
   "maxMoves": 25,
   "obstacles": [],
-  "difficulty": 0
+  "difficulty": 0.08
 }

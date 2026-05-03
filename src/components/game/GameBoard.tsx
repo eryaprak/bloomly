@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import {
   View,
   Image,
@@ -13,6 +13,8 @@ import Animated, {
   withSequence,
   withTiming,
   withSpring,
+  withRepeat,
+  cancelAnimation,
 } from 'react-native-reanimated';
 
 import { useGameStore } from '@/stores/gameStore';
@@ -41,14 +43,14 @@ const GLOW_COLORS: Record<PetalColor, string> = {
   blue:   '#3B82F6',
 };
 
-// Inner highlight tints for 3D illusion
+// Lighter inner highlight tints for 3D illusion
 const HIGHLIGHT_COLORS: Record<PetalColor, string> = {
-  red:    'rgba(255,160,160,0.35)',
-  pink:   'rgba(255,200,220,0.35)',
-  purple: 'rgba(200,150,255,0.35)',
-  yellow: 'rgba(255,250,150,0.40)',
-  green:  'rgba(150,255,180,0.35)',
-  blue:   'rgba(130,200,255,0.35)',
+  red:    'rgba(255,170,170,0.42)',
+  pink:   'rgba(255,210,230,0.42)',
+  purple: 'rgba(210,160,255,0.42)',
+  yellow: 'rgba(255,252,160,0.48)',
+  green:  'rgba(160,255,190,0.42)',
+  blue:   'rgba(140,210,255,0.42)',
 };
 
 interface PetalCellProps {
@@ -62,16 +64,42 @@ interface PetalCellProps {
 
 function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: PetalCellProps) {
   const scale = useSharedValue(1);
+  const pulseScale = useSharedValue(1);
+  const pulseOpacity = useSharedValue(0);
+
+  // Continuous pulse animation when selected
+  useEffect(() => {
+    if (isSelected) {
+      pulseOpacity.value = 0.6;
+      pulseScale.value = withRepeat(
+        withSequence(
+          withTiming(1.18, { duration: 380 }),
+          withTiming(1.0, { duration: 380 }),
+        ),
+        -1,
+        true,
+      );
+    } else {
+      cancelAnimation(pulseScale);
+      pulseScale.value = withTiming(1, { duration: 150 });
+      pulseOpacity.value = withTiming(0, { duration: 150 });
+    }
+  }, [isSelected, pulseScale, pulseOpacity]);
 
   const animStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }));
 
+  const pulseRingStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pulseScale.value }],
+    opacity: pulseOpacity.value,
+  }));
+
   const handlePress = useCallback(() => {
     if (isLocked) return;
     scale.value = withSequence(
-      withTiming(0.85, { duration: 80 }),
-      withSpring(1, { damping: 12, stiffness: 180 }),
+      withTiming(0.80, { duration: 70 }),
+      withSpring(1, { damping: 10, stiffness: 200 }),
     );
     onPress();
   }, [isLocked, scale, onPress]);
@@ -82,32 +110,50 @@ function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: Pet
   return (
     <Pressable onPress={handlePress} style={{ width: size, height: size }}>
       <Animated.View style={[{ width: size, height: size }, animStyle]}>
-        {/* Selection glow ring */}
-        {isSelected && (
-          <View
-            style={[
-              StyleSheet.absoluteFill,
-              styles.selectionRing,
-              {
-                borderColor: glowColor,
-                shadowColor: glowColor,
-                borderRadius: size / 2,
-              },
-            ]}
-          />
-        )}
 
-        {/* Drop shadow layer for 3D depth */}
+        {/* Continuous pulse ring (selected) */}
+        <Animated.View
+          style={[
+            StyleSheet.absoluteFill,
+            styles.pulseRing,
+            {
+              borderColor: glowColor,
+              borderRadius: size * 0.5,
+              top: -(size * 0.12),
+              left: -(size * 0.12),
+              right: -(size * 0.12),
+              bottom: -(size * 0.12),
+            },
+            pulseRingStyle,
+          ]}
+        />
+
+        {/* Strong drop shadow for 3D depth */}
         <View
           style={[
             styles.shadowLayer,
             {
-              width: size - 4,
-              height: size - 4,
-              borderRadius: (size - 4) / 2,
+              width: size - 2,
+              height: size - 2,
+              borderRadius: (size - 2) / 2,
               backgroundColor: glowColor,
-              left: 2,
-              top: 4,
+              left: 3,
+              top: 5,
+            },
+          ]}
+        />
+
+        {/* Secondary softer shadow */}
+        <View
+          style={[
+            styles.shadowLayerSoft,
+            {
+              width: size + 4,
+              height: size + 4,
+              borderRadius: (size + 4) / 2,
+              backgroundColor: glowColor,
+              left: -2,
+              top: 2,
             },
           ]}
         />
@@ -119,17 +165,31 @@ function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: Pet
           resizeMode="contain"
         />
 
-        {/* Inner highlight for 3D pop */}
+        {/* Top-left highlight for 3D pop */}
         <View
           style={[
             styles.innerHighlight,
             {
-              width: size * 0.55,
-              height: size * 0.35,
-              borderRadius: size * 0.2,
+              width: size * 0.58,
+              height: size * 0.38,
+              borderRadius: size * 0.22,
               backgroundColor: highlightColor,
-              top: size * 0.1,
-              left: size * 0.2,
+              top: size * 0.08,
+              left: size * 0.16,
+            },
+          ]}
+        />
+
+        {/* Bottom shadow gradient for depth */}
+        <View
+          style={[
+            styles.bottomShadow,
+            {
+              width: size * 0.7,
+              height: size * 0.25,
+              borderRadius: size * 0.15,
+              bottom: size * 0.06,
+              left: size * 0.15,
             },
           ]}
         />
@@ -140,7 +200,7 @@ function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: Pet
             style={[
               StyleSheet.absoluteFill,
               styles.iceOverlay,
-              { opacity: iceLayer >= 2 ? 0.65 : 0.42, borderRadius: size * 0.15 },
+              { opacity: iceLayer >= 2 ? 0.7 : 0.45, borderRadius: size * 0.18 },
             ]}
           />
         )}
@@ -151,14 +211,14 @@ function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: Pet
             style={[
               StyleSheet.absoluteFill,
               styles.iceCrack,
-              { borderRadius: size * 0.15 },
+              { borderRadius: size * 0.18 },
             ]}
           />
         )}
 
         {/* Lock overlay */}
         {isLocked && (
-          <View style={[StyleSheet.absoluteFill, styles.lockOverlay, { borderRadius: size * 0.15 }]}>
+          <View style={[StyleSheet.absoluteFill, styles.lockOverlay, { borderRadius: size * 0.18 }]}>
             <View style={[styles.lockBody, { width: size * 0.38, height: size * 0.32, borderRadius: size * 0.06 }]}>
               <View style={[styles.lockShackle, { width: size * 0.22, height: size * 0.2, borderRadius: size * 0.12, borderWidth: size * 0.045 }]} />
             </View>
@@ -217,44 +277,83 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
 
       setSelectedCell({ row, col });
       pickPetal(row, col);
-      setTimeout(() => setSelectedCell(null), 300);
+      setTimeout(() => setSelectedCell(null), 350);
     },
     [gameState, isAnimating, board, pickPetal],
   );
 
   if (!gameState) return null;
 
+  // Build grid background slots (empty cell markers)
+  const gridSlots: { left: number; top: number }[] = [];
+  for (let ri = 0; ri < rows; ri++) {
+    for (let ci = 0; ci < cols; ci++) {
+      gridSlots.push({
+        left: ci * (cellSize + CELL_PADDING),
+        top: ri * (cellSize + CELL_PADDING),
+      });
+    }
+  }
+
   return (
     <View
-      style={[styles.container, { height: boardHeight }]}
+      style={[styles.container, { height: boardHeight + BOARD_PADDING * 2 }]}
       onLayout={handleLayout}
     >
-      {/* Board grid using absolute positioning */}
-      <View style={[styles.boardArea, { width: boardWidth, height: boardHeight }]}>
-        {board.map((rowArr, ri) =>
-          rowArr.map((petal, ci) => {
-            if (!petal) return null;
-            const left = ci * (cellSize + CELL_PADDING);
-            const top = ri * (cellSize + CELL_PADDING);
-            const isSelected = selectedCell?.row === ri && selectedCell?.col === ci;
+      {/* Board frame with inner glow */}
+      <View
+        style={[
+          styles.boardFrame,
+          { width: boardWidth + 24, height: boardHeight + 24 },
+        ]}
+      >
+        {/* Board area */}
+        <View style={[styles.boardArea, { width: boardWidth, height: boardHeight }]}>
 
-            return (
-              <View
-                key={petal.id}
-                style={{ position: 'absolute', left, top }}
-              >
-                <PetalCell
-                  color={petal.color}
-                  size={cellSize}
-                  isSelected={isSelected}
-                  iceLayer={petal.iceLayer}
-                  isLocked={petal.isLocked}
-                  onPress={() => handlePetalPress(ri, ci)}
-                />
-              </View>
-            );
-          }),
-        )}
+          {/* Grid slot backgrounds (empty cells) */}
+          {gridSlots.map(({ left, top }, idx) => (
+            <View
+              key={`slot-${idx}`}
+              style={[
+                styles.gridSlot,
+                {
+                  position: 'absolute',
+                  left,
+                  top,
+                  width: cellSize,
+                  height: cellSize,
+                  borderRadius: cellSize * 0.2,
+                },
+              ]}
+            />
+          ))}
+
+          {/* Petals */}
+          {board.map((rowArr, ri) =>
+            rowArr.map((petal, ci) => {
+              if (!petal) return null;
+              const left = ci * (cellSize + CELL_PADDING);
+              const top = ri * (cellSize + CELL_PADDING);
+              const isSelected = selectedCell?.row === ri && selectedCell?.col === ci;
+
+              return (
+                <View
+                  key={petal.id}
+                  style={{ position: 'absolute', left, top }}
+                >
+                  <PetalCell
+                    color={petal.color}
+                    size={cellSize}
+                    isSelected={isSelected}
+                    iceLayer={petal.iceLayer}
+                    isLocked={petal.isLocked}
+                    onPress={() => handlePetalPress(ri, ci)}
+                  />
+                </View>
+              );
+            }),
+          )}
+        </View>
       </View>
     </View>
   );
@@ -266,42 +365,60 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  boardFrame: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(15, 8, 35, 0.55)',
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: 'rgba(168, 85, 247, 0.3)',
+    shadowColor: '#A855F7',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 20,
+    elevation: 12,
+  },
   boardArea: {
     position: 'relative',
   },
-  selectionRing: {
+  gridSlot: {
+    backgroundColor: 'rgba(255,255,255,0.04)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.07)',
+  },
+  pulseRing: {
     position: 'absolute',
-    top: -4,
-    left: -4,
-    right: -4,
-    bottom: -4,
     borderWidth: 2.5,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.9,
-    shadowRadius: 8,
-    elevation: 6,
   },
   shadowLayer: {
     position: 'absolute',
-    opacity: 0.28,
+    opacity: 0.35,
+  },
+  shadowLayerSoft: {
+    position: 'absolute',
+    opacity: 0.12,
   },
   innerHighlight: {
     position: 'absolute',
     opacity: 1,
-    transform: [{ rotate: '-20deg' }],
+    transform: [{ rotate: '-18deg' }],
+  },
+  bottomShadow: {
+    position: 'absolute',
+    backgroundColor: 'rgba(0,0,0,0.3)',
   },
   iceOverlay: {
     backgroundColor: '#AADDFF',
-    borderWidth: 1,
-    borderColor: 'rgba(180,230,255,0.7)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(180,230,255,0.75)',
   },
   iceCrack: {
     backgroundColor: 'transparent',
     borderWidth: 1.5,
-    borderColor: 'rgba(200,240,255,0.85)',
+    borderColor: 'rgba(200,240,255,0.9)',
   },
   lockOverlay: {
-    backgroundColor: 'rgba(40,40,60,0.62)',
+    backgroundColor: 'rgba(40,40,60,0.65)',
     alignItems: 'center',
     justifyContent: 'center',
   },

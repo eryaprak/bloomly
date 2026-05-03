@@ -1,47 +1,48 @@
 {
   "id": 30,
   "rows": 6,
-  "cols": 7,
+  "cols": 6,
   "colors": [
     "red",
     "pink",
     "purple",
     "yellow",
-    "green"
+    "green",
+    "blue"
   ],
   "petals": [
     {
       "id": "p_30_0",
       "color": "green",
-      "row": 2,
-      "col": 0,
+      "row": 0,
+      "col": 1,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_30_1",
-      "color": "purple",
-      "row": 4,
-      "col": 6,
+      "color": "blue",
+      "row": 1,
+      "col": 1,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_30_2",
-      "color": "pink",
-      "row": 0,
-      "col": 6,
+      "color": "blue",
+      "row": 4,
+      "col": 2,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_30_3",
-      "color": "yellow",
-      "row": 0,
-      "col": 5,
+      "color": "blue",
+      "row": 2,
+      "col": 3,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
@@ -49,125 +50,125 @@
     {
       "id": "p_30_4",
       "color": "pink",
-      "row": 1,
-      "col": 0,
+      "row": 4,
+      "col": 3,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_30_5",
-      "color": "pink",
+      "color": "red",
       "row": 5,
-      "col": 1,
+      "col": 3,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_30_6",
-      "color": "purple",
-      "row": 3,
-      "col": 2,
+      "color": "yellow",
+      "row": 0,
+      "col": 3,
       "isLocked": false,
-      "iceLayer": 0,
+      "iceLayer": 2,
       "isCollected": false
     },
     {
       "id": "p_30_7",
-      "color": "green",
-      "row": 2,
-      "col": 6,
+      "color": "purple",
+      "row": 4,
+      "col": 1,
       "isLocked": false,
-      "iceLayer": 0,
+      "iceLayer": 1,
       "isCollected": false
     },
     {
       "id": "p_30_8",
-      "color": "yellow",
+      "color": "blue",
       "row": 1,
-      "col": 5,
+      "col": 0,
       "isLocked": false,
-      "iceLayer": 0,
+      "iceLayer": 2,
       "isCollected": false
     },
     {
       "id": "p_30_9",
-      "color": "red",
-      "row": 5,
-      "col": 3,
+      "color": "green",
+      "row": 1,
+      "col": 2,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_30_10",
-      "color": "green",
-      "row": 0,
-      "col": 1,
+      "color": "pink",
+      "row": 1,
+      "col": 5,
       "isLocked": false,
-      "iceLayer": 0,
+      "iceLayer": 1,
       "isCollected": false
     },
     {
       "id": "p_30_11",
-      "color": "purple",
-      "row": 3,
-      "col": 6,
+      "color": "blue",
+      "row": 2,
+      "col": 1,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_30_12",
-      "color": "yellow",
+      "color": "pink",
       "row": 3,
-      "col": 3,
+      "col": 0,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_30_13",
-      "color": "red",
+      "color": "purple",
       "row": 4,
-      "col": 1,
+      "col": 5,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_30_14",
-      "color": "pink",
-      "row": 5,
-      "col": 2,
+      "color": "purple",
+      "row": 3,
+      "col": 5,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_30_15",
-      "color": "red",
+      "color": "green",
       "row": 0,
-      "col": 2,
+      "col": 0,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_30_16",
-      "color": "green",
-      "row": 3,
-      "col": 1,
+      "color": "pink",
+      "row": 0,
+      "col": 4,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_30_17",
-      "color": "purple",
-      "row": 1,
-      "col": 4,
+      "color": "yellow",
+      "row": 3,
+      "col": 3,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
@@ -175,7 +176,7 @@
     {
       "id": "p_30_18",
       "color": "green",
-      "row": 3,
+      "row": 5,
       "col": 0,
       "isLocked": false,
       "iceLayer": 0,
@@ -183,70 +184,16 @@
     },
     {
       "id": "p_30_19",
-      "color": "yellow",
-      "row": 5,
-      "col": 5,
+      "color": "red",
+      "row": 2,
+      "col": 0,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_30_20",
-      "color": "red",
-      "row": 5,
-      "col": 6,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
-      "id": "p_30_21",
-      "color": "yellow",
-      "row": 1,
-      "col": 3,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
-      "id": "p_30_22",
-      "color": "pink",
-      "row": 4,
-      "col": 2,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
-      "id": "p_30_23",
-      "color": "purple",
-      "row": 3,
-      "col": 5,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
-      "id": "p_30_24",
-      "color": "yellow",
-      "row": 2,
-      "col": 4,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
-      "id": "p_30_25",
-      "color": "red",
-      "row": 1,
-      "col": 6,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
-      "id": "p_30_26",
-      "color": "red",
+      "color": "blue",
       "row": 4,
       "col": 0,
       "isLocked": false,
@@ -254,8 +201,8 @@
       "isCollected": false
     },
     {
-      "id": "p_30_27",
-      "color": "purple",
+      "id": "p_30_21",
+      "color": "red",
       "row": 4,
       "col": 4,
       "isLocked": false,
@@ -263,9 +210,63 @@
       "isCollected": false
     },
     {
-      "id": "p_30_28",
+      "id": "p_30_22",
       "color": "pink",
-      "row": 4,
+      "row": 5,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_30_23",
+      "color": "yellow",
+      "row": 0,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 1,
+      "isCollected": false
+    },
+    {
+      "id": "p_30_24",
+      "color": "purple",
+      "row": 2,
+      "col": 5,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_30_25",
+      "color": "purple",
+      "row": 5,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 2,
+      "isCollected": false
+    },
+    {
+      "id": "p_30_26",
+      "color": "yellow",
+      "row": 3,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_30_27",
+      "color": "red",
+      "row": 3,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 1,
+      "isCollected": false
+    },
+    {
+      "id": "p_30_28",
+      "color": "red",
+      "row": 0,
       "col": 5,
       "isLocked": false,
       "iceLayer": 0,
@@ -274,8 +275,62 @@
     {
       "id": "p_30_29",
       "color": "green",
-      "row": 2,
+      "row": 5,
+      "col": 5,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_30_30",
+      "color": "green",
+      "row": 1,
       "col": 3,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_30_31",
+      "color": "pink",
+      "row": 2,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 1,
+      "isCollected": false
+    },
+    {
+      "id": "p_30_32",
+      "color": "yellow",
+      "row": 5,
+      "col": 4,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_30_33",
+      "color": "yellow",
+      "row": 3,
+      "col": 4,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_30_34",
+      "color": "purple",
+      "row": 1,
+      "col": 4,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_30_35",
+      "color": "red",
+      "row": 2,
+      "col": 4,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
@@ -311,10 +366,19 @@
       "capacity": 6,
       "filled": 0,
       "isBloomed": false
+    },
+    {
+      "color": "blue",
+      "capacity": 6,
+      "filled": 0,
+      "isBloomed": false
     }
   ],
-  "dockSize": 5,
-  "maxMoves": 42,
-  "obstacles": [],
-  "difficulty": 0.13999999999999996
+  "dockSize": 7,
+  "maxMoves": 18,
+  "obstacles": [
+    "ice",
+    "lock"
+  ],
+  "difficulty": 0.6
 }

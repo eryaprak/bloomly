@@ -1,64 +1,65 @@
 {
   "id": 32,
-  "rows": 7,
-  "cols": 7,
+  "rows": 6,
+  "cols": 6,
   "colors": [
     "red",
     "pink",
     "purple",
     "yellow",
-    "green"
+    "green",
+    "blue"
   ],
   "petals": [
     {
       "id": "p_32_0",
-      "color": "pink",
-      "row": 1,
+      "color": "red",
+      "row": 5,
+      "col": 0,
+      "isLocked": true,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_32_1",
+      "color": "blue",
+      "row": 3,
       "col": 5,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
-      "id": "p_32_1",
-      "color": "purple",
-      "row": 1,
-      "col": 1,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
       "id": "p_32_2",
-      "color": "green",
-      "row": 3,
-      "col": 1,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
-      "id": "p_32_3",
       "color": "purple",
-      "row": 0,
-      "col": 6,
-      "isLocked": false,
-      "iceLayer": 1,
-      "isCollected": false
-    },
-    {
-      "id": "p_32_4",
-      "color": "purple",
-      "row": 2,
+      "row": 5,
       "col": 2,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
+      "id": "p_32_3",
+      "color": "pink",
+      "row": 4,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 2,
+      "isCollected": false
+    },
+    {
+      "id": "p_32_4",
+      "color": "blue",
+      "row": 0,
+      "col": 0,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
       "id": "p_32_5",
-      "color": "red",
-      "row": 2,
+      "color": "yellow",
+      "row": 1,
       "col": 3,
       "isLocked": false,
       "iceLayer": 0,
@@ -66,36 +67,36 @@
     },
     {
       "id": "p_32_6",
-      "color": "red",
-      "row": 4,
-      "col": 1,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
-      "id": "p_32_7",
-      "color": "red",
-      "row": 1,
+      "color": "purple",
+      "row": 0,
       "col": 3,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
+      "id": "p_32_7",
+      "color": "green",
+      "row": 2,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
       "id": "p_32_8",
-      "color": "purple",
-      "row": 0,
-      "col": 4,
+      "color": "blue",
+      "row": 3,
+      "col": 1,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_32_9",
-      "color": "yellow",
-      "row": 5,
-      "col": 1,
+      "color": "purple",
+      "row": 2,
+      "col": 3,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
@@ -103,7 +104,7 @@
     {
       "id": "p_32_10",
       "color": "green",
-      "row": 6,
+      "row": 4,
       "col": 4,
       "isLocked": false,
       "iceLayer": 0,
@@ -113,16 +114,16 @@
       "id": "p_32_11",
       "color": "pink",
       "row": 0,
-      "col": 5,
+      "col": 2,
       "isLocked": false,
-      "iceLayer": 0,
+      "iceLayer": 1,
       "isCollected": false
     },
     {
       "id": "p_32_12",
-      "color": "red",
+      "color": "blue",
       "row": 0,
-      "col": 0,
+      "col": 4,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
@@ -130,17 +131,17 @@
     {
       "id": "p_32_13",
       "color": "yellow",
-      "row": 5,
-      "col": 5,
+      "row": 3,
+      "col": 0,
       "isLocked": false,
-      "iceLayer": 0,
+      "iceLayer": 2,
       "isCollected": false
     },
     {
       "id": "p_32_14",
-      "color": "yellow",
-      "row": 4,
-      "col": 3,
+      "color": "purple",
+      "row": 1,
+      "col": 2,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
@@ -148,7 +149,7 @@
     {
       "id": "p_32_15",
       "color": "green",
-      "row": 1,
+      "row": 2,
       "col": 0,
       "isLocked": false,
       "iceLayer": 0,
@@ -156,54 +157,54 @@
     },
     {
       "id": "p_32_16",
-      "color": "green",
-      "row": 5,
-      "col": 6,
+      "color": "red",
+      "row": 1,
+      "col": 5,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_32_17",
-      "color": "purple",
+      "color": "blue",
       "row": 2,
-      "col": 1,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
-      "id": "p_32_18",
-      "color": "purple",
-      "row": 6,
-      "col": 6,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
-      "id": "p_32_19",
-      "color": "green",
-      "row": 3,
-      "col": 0,
-      "isLocked": false,
-      "iceLayer": 0,
-      "isCollected": false
-    },
-    {
-      "id": "p_32_20",
-      "color": "yellow",
-      "row": 5,
       "col": 4,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
-      "id": "p_32_21",
+      "id": "p_32_18",
       "color": "yellow",
-      "row": 6,
+      "row": 3,
       "col": 3,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_32_19",
+      "color": "purple",
+      "row": 1,
+      "col": 4,
+      "isLocked": false,
+      "iceLayer": 1,
+      "isCollected": false
+    },
+    {
+      "id": "p_32_20",
+      "color": "green",
+      "row": 4,
+      "col": 3,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_32_21",
+      "color": "pink",
+      "row": 1,
+      "col": 0,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
@@ -211,35 +212,35 @@
     {
       "id": "p_32_22",
       "color": "pink",
-      "row": 3,
-      "col": 6,
-      "isLocked": false,
+      "row": 4,
+      "col": 0,
+      "isLocked": true,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_32_23",
-      "color": "green",
-      "row": 3,
-      "col": 4,
+      "color": "pink",
+      "row": 0,
+      "col": 1,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_32_24",
-      "color": "pink",
-      "row": 1,
-      "col": 6,
+      "color": "purple",
+      "row": 0,
+      "col": 5,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_32_25",
-      "color": "pink",
-      "row": 2,
-      "col": 4,
+      "color": "yellow",
+      "row": 1,
+      "col": 1,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
@@ -247,17 +248,17 @@
     {
       "id": "p_32_26",
       "color": "yellow",
-      "row": 6,
-      "col": 2,
+      "row": 3,
+      "col": 4,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_32_27",
-      "color": "pink",
-      "row": 0,
-      "col": 1,
+      "color": "blue",
+      "row": 5,
+      "col": 3,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
@@ -266,18 +267,72 @@
       "id": "p_32_28",
       "color": "red",
       "row": 5,
-      "col": 2,
+      "col": 5,
       "isLocked": false,
       "iceLayer": 0,
       "isCollected": false
     },
     {
       "id": "p_32_29",
+      "color": "yellow",
+      "row": 2,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 2,
+      "isCollected": false
+    },
+    {
+      "id": "p_32_30",
       "color": "red",
-      "row": 6,
-      "col": 0,
+      "row": 3,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 2,
+      "isCollected": false
+    },
+    {
+      "id": "p_32_31",
+      "color": "green",
+      "row": 5,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 2,
+      "isCollected": false
+    },
+    {
+      "id": "p_32_32",
+      "color": "green",
+      "row": 4,
+      "col": 5,
       "isLocked": false,
       "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_32_33",
+      "color": "red",
+      "row": 2,
+      "col": 5,
+      "isLocked": false,
+      "iceLayer": 1,
+      "isCollected": false
+    },
+    {
+      "id": "p_32_34",
+      "color": "red",
+      "row": 4,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false
+    },
+    {
+      "id": "p_32_35",
+      "color": "pink",
+      "row": 5,
+      "col": 4,
+      "isLocked": false,
+      "iceLayer": 2,
       "isCollected": false
     }
   ],
@@ -311,13 +366,19 @@
       "capacity": 6,
       "filled": 0,
       "isBloomed": false
+    },
+    {
+      "color": "blue",
+      "capacity": 6,
+      "filled": 0,
+      "isBloomed": false
     }
   ],
-  "dockSize": 5,
-  "maxMoves": 39,
+  "dockSize": 7,
+  "maxMoves": 16,
   "obstacles": [
     "ice",
     "lock"
   ],
-  "difficulty": 0.365
+  "difficulty": 0.64
 }
