@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import React, { useMemo, useCallback, useState, useEffect, useRef } from 'react';
 import {
   View,
   Image,
@@ -18,7 +18,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { useGameStore } from '@/stores/gameStore';
-import { PetalColor } from '@/engine/types';
+import { PetalColor, Petal } from '@/engine/types';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -43,7 +43,6 @@ const GLOW_COLORS: Record<PetalColor, string> = {
   blue:   '#3B82F6',
 };
 
-// Lighter inner highlight tints for 3D illusion
 const HIGHLIGHT_COLORS: Record<PetalColor, string> = {
   red:    'rgba(255,170,170,0.42)',
   pink:   'rgba(255,210,230,0.42)',
@@ -53,19 +52,29 @@ const HIGHLIGHT_COLORS: Record<PetalColor, string> = {
   blue:   'rgba(140,210,255,0.42)',
 };
 
-interface PetalCellProps {
-  color: PetalColor;
+// ─── Top Petal Cell (fully interactive) ──────────────────────────────────────
+
+interface TopPetalCellProps {
+  petal: Petal;
   size: number;
   isSelected: boolean;
-  iceLayer: number;
-  isLocked: boolean;
+  isRevealing: boolean;
   onPress: () => void;
 }
 
-function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: PetalCellProps) {
-  const scale = useSharedValue(1);
+function TopPetalCell({ petal, size, isSelected, isRevealing, onPress }: TopPetalCellProps) {
+  const scale = useSharedValue(isRevealing ? 0.8 : 1);
+  const opacity = useSharedValue(isRevealing ? 0.45 : 1);
   const pulseScale = useSharedValue(1);
   const pulseOpacity = useSharedValue(0);
+
+  // Reveal animation when a layer above was removed
+  useEffect(() => {
+    if (isRevealing) {
+      scale.value = withSpring(1, { damping: 12, stiffness: 180 });
+      opacity.value = withTiming(1, { duration: 280 });
+    }
+  }, [isRevealing, scale, opacity]);
 
   // Continuous pulse animation when selected
   useEffect(() => {
@@ -88,6 +97,7 @@ function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: Pet
 
   const animStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
+    opacity: opacity.value,
   }));
 
   const pulseRingStyle = useAnimatedStyle(() => ({
@@ -96,16 +106,16 @@ function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: Pet
   }));
 
   const handlePress = useCallback(() => {
-    if (isLocked) return;
+    if (petal.isLocked) return;
     scale.value = withSequence(
       withTiming(0.80, { duration: 70 }),
       withSpring(1, { damping: 10, stiffness: 200 }),
     );
     onPress();
-  }, [isLocked, scale, onPress]);
+  }, [petal.isLocked, scale, onPress]);
 
-  const glowColor = GLOW_COLORS[color];
-  const highlightColor = HIGHLIGHT_COLORS[color];
+  const glowColor = GLOW_COLORS[petal.color];
+  const highlightColor = HIGHLIGHT_COLORS[petal.color];
 
   return (
     <Pressable onPress={handlePress} style={{ width: size, height: size }}>
@@ -128,7 +138,7 @@ function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: Pet
           ]}
         />
 
-        {/* Strong drop shadow for 3D depth */}
+        {/* Drop shadow */}
         <View
           style={[
             styles.shadowLayer,
@@ -143,7 +153,7 @@ function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: Pet
           ]}
         />
 
-        {/* Secondary softer shadow */}
+        {/* Soft shadow */}
         <View
           style={[
             styles.shadowLayerSoft,
@@ -158,14 +168,12 @@ function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: Pet
           ]}
         />
 
-        {/* Petal image */}
         <Image
-          source={PETAL_SOURCES[color]}
+          source={PETAL_SOURCES[petal.color]}
           style={{ width: size, height: size, position: 'absolute' }}
           resizeMode="contain"
         />
 
-        {/* Top-left highlight for 3D pop */}
         <View
           style={[
             styles.innerHighlight,
@@ -180,7 +188,6 @@ function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: Pet
           ]}
         />
 
-        {/* Bottom shadow gradient for depth */}
         <View
           style={[
             styles.bottomShadow,
@@ -194,19 +201,17 @@ function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: Pet
           ]}
         />
 
-        {/* Ice overlay */}
-        {iceLayer > 0 && (
+        {petal.iceLayer > 0 && (
           <View
             style={[
               StyleSheet.absoluteFill,
               styles.iceOverlay,
-              { opacity: iceLayer >= 2 ? 0.7 : 0.45, borderRadius: size * 0.18 },
+              { opacity: petal.iceLayer >= 2 ? 0.7 : 0.45, borderRadius: size * 0.18 },
             ]}
           />
         )}
 
-        {/* Ice crack lines for double ice */}
-        {iceLayer >= 2 && (
+        {petal.iceLayer >= 2 && (
           <View
             style={[
               StyleSheet.absoluteFill,
@@ -216,8 +221,7 @@ function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: Pet
           />
         )}
 
-        {/* Lock overlay */}
-        {isLocked && (
+        {petal.isLocked && (
           <View style={[StyleSheet.absoluteFill, styles.lockOverlay, { borderRadius: size * 0.18 }]}>
             <View style={[styles.lockBody, { width: size * 0.38, height: size * 0.32, borderRadius: size * 0.06 }]}>
               <View style={[styles.lockShackle, { width: size * 0.22, height: size * 0.2, borderRadius: size * 0.12, borderWidth: size * 0.045 }]} />
@@ -228,6 +232,100 @@ function PetalCell({ color, size, isSelected, iceLayer, isLocked, onPress }: Pet
     </Pressable>
   );
 }
+
+// ─── Under-layer Petal (dimmed, not interactive) ──────────────────────────────
+
+interface UnderPetalProps {
+  color: PetalColor;
+  size: number;
+  layerIndex: number; // 0 = directly under top, 1 = two below top, etc.
+}
+
+function UnderPetal({ color, size, layerIndex }: UnderPetalProps) {
+  // Each layer further down is smaller and darker
+  const scaleFactor = 0.82 - layerIndex * 0.06;
+  const scaledSize = Math.floor(size * scaleFactor);
+  const offset = Math.floor((size - scaledSize) / 2);
+
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        left: offset + layerIndex * 2,
+        top: offset + layerIndex * 2,
+        width: scaledSize,
+        height: scaledSize,
+        opacity: 0.38 - layerIndex * 0.08,
+      }}
+      pointerEvents="none"
+    >
+      <Image
+        source={PETAL_SOURCES[color]}
+        style={{ width: scaledSize, height: scaledSize }}
+        resizeMode="contain"
+      />
+      {/* Dark overlay to indicate it's blocked */}
+      <View
+        style={[
+          StyleSheet.absoluteFill,
+          {
+            backgroundColor: 'rgba(0,0,0,0.55)',
+            borderRadius: scaledSize * 0.18,
+          },
+        ]}
+      />
+    </View>
+  );
+}
+
+// ─── Stack Cell renderer ──────────────────────────────────────────────────────
+
+interface StackCellProps {
+  stack: Petal[];
+  size: number;
+  isSelected: boolean;
+  prevTopId: string | null; // id of top petal from previous render (to detect reveal)
+  onPressTop: () => void;
+}
+
+function StackCell({ stack, size, isSelected, prevTopId, onPressTop }: StackCellProps) {
+  if (stack.length === 0) return null;
+
+  const topPetal = stack[stack.length - 1];
+  // A reveal happens when the previous top was removed and a new petal is now on top
+  const isRevealing = prevTopId !== null && prevTopId !== topPetal.id;
+
+  return (
+    <View style={{ width: size, height: size }}>
+      {/* Render under-layers from bottom (most buried) to just below top */}
+      {stack.slice(0, -1).map((underPetal, idx) => {
+        // layerIndex: 0 = directly under top, higher = more buried
+        const layerIndex = stack.length - 2 - idx;
+        return (
+          <UnderPetal
+            key={underPetal.id}
+            color={underPetal.color}
+            size={size}
+            layerIndex={layerIndex}
+          />
+        );
+      })}
+
+      {/* Top petal — interactive */}
+      <View style={StyleSheet.absoluteFill}>
+        <TopPetalCell
+          petal={topPetal}
+          size={size}
+          isSelected={isSelected}
+          isRevealing={isRevealing}
+          onPress={onPressTop}
+        />
+      </View>
+    </View>
+  );
+}
+
+// ─── GameBoard ────────────────────────────────────────────────────────────────
 
 interface GameBoardProps {
   onBloom?: (color: PetalColor) => void;
@@ -241,6 +339,9 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
 
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [viewWidth, setViewWidth] = useState<number>(SCREEN_WIDTH);
+
+  // Track previous top-petal ids to detect reveal events
+  const prevTopIds = useRef<Map<string, string>>(new Map());
 
   React.useEffect(() => {
     if (lastResult?.bloom && onBloom) {
@@ -273,7 +374,20 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
   const handlePetalPress = useCallback(
     (row: number, col: number) => {
       if (!gameState || isAnimating) return;
-      if (!board[row]?.[col]) return;
+      const stack = board[row]?.[col];
+      if (!stack || stack.length === 0) return;
+
+      // Save current top ids before pick
+      const newMap = new Map<string, string>();
+      for (let r = 0; r < board.length; r++) {
+        for (let c = 0; c < (board[r]?.length ?? 0); c++) {
+          const s = board[r][c];
+          if (s && s.length > 0) {
+            newMap.set(`${r}_${c}`, s[s.length - 1].id);
+          }
+        }
+      }
+      prevTopIds.current = newMap;
 
       setSelectedCell({ row, col });
       pickPetal(row, col);
@@ -284,7 +398,7 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
 
   if (!gameState) return null;
 
-  // Build grid background slots (empty cell markers)
+  // Grid slot backgrounds
   const gridSlots: { left: number; top: number }[] = [];
   for (let ri = 0; ri < rows; ri++) {
     for (let ci = 0; ci < cols; ci++) {
@@ -300,17 +414,15 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
       style={[styles.container, { height: boardHeight + BOARD_PADDING * 2 }]}
       onLayout={handleLayout}
     >
-      {/* Board frame with inner glow */}
       <View
         style={[
           styles.boardFrame,
           { width: boardWidth + 24, height: boardHeight + 24 },
         ]}
       >
-        {/* Board area */}
         <View style={[styles.boardArea, { width: boardWidth, height: boardHeight }]}>
 
-          {/* Grid slot backgrounds (empty cells) */}
+          {/* Grid slot backgrounds */}
           {gridSlots.map(({ left, top }, idx) => (
             <View
               key={`slot-${idx}`}
@@ -328,26 +440,27 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
             />
           ))}
 
-          {/* Petals */}
+          {/* Stacks */}
           {board.map((rowArr, ri) =>
-            rowArr.map((petal, ci) => {
-              if (!petal) return null;
+            rowArr.map((stack, ci) => {
+              if (!stack || stack.length === 0) return null;
               const left = ci * (cellSize + CELL_PADDING);
               const top = ri * (cellSize + CELL_PADDING);
               const isSelected = selectedCell?.row === ri && selectedCell?.col === ci;
+              const cellKey = `${ri}_${ci}`;
+              const prevTopId = prevTopIds.current.get(cellKey) ?? null;
 
               return (
                 <View
-                  key={petal.id}
+                  key={cellKey}
                   style={{ position: 'absolute', left, top }}
                 >
-                  <PetalCell
-                    color={petal.color}
+                  <StackCell
+                    stack={stack}
                     size={cellSize}
                     isSelected={isSelected}
-                    iceLayer={petal.iceLayer}
-                    isLocked={petal.isLocked}
-                    onPress={() => handlePetalPress(ri, ci)}
+                    prevTopId={prevTopId}
+                    onPressTop={() => handlePetalPress(ri, ci)}
                   />
                 </View>
               );

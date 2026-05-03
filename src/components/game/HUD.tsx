@@ -19,7 +19,6 @@ export default function HUD({ levelId, onBooster }: HUDProps) {
   const gold = usePlayerStore((s) => s.gold);
   const { lives, maxLives, countdown } = useLifeTimer();
 
-  const movesLeft = gameState?.movesLeft ?? 0;
   const score = gameState?.score ?? 0;
 
   // Score flash animation
@@ -55,18 +54,10 @@ export default function HUD({ levelId, onBooster }: HUDProps) {
   };
   // ──────────────────────────────────────────────────────────────────────────
 
-  const isMovesLow = movesLeft <= 5;
-  const movesColor = isMovesLow ? '#FF6B35' : '#FFFFFF';
-
   return (
     <View style={styles.container}>
       {/* Top row */}
       <View style={styles.topRow}>
-        <View style={[styles.hudChip, isMovesLow && styles.hudChipWarning]}>
-          <Text style={styles.chipLabel}>{t('moves')}</Text>
-          <Text style={[styles.chipValue, { color: movesColor }]}>{movesLeft}</Text>
-        </View>
-
         <View style={styles.centerChip}>
           <Text style={styles.levelText}>{t('level')} {levelId}</Text>
           <View style={styles.livesRow}>
@@ -135,8 +126,9 @@ const styles = StyleSheet.create({
   },
   topRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    gap: 8,
   },
   hudChip: {
     alignItems: 'center',
@@ -148,14 +140,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.1)',
   },
-  hudChipWarning: {
-    borderColor: '#FF6B35',
-    backgroundColor: 'rgba(255, 107, 53, 0.15)',
-  },
   centerChip: {
     alignItems: 'center',
     flex: 1,
-    marginHorizontal: 8,
   },
   levelText: {
     color: '#FFFFFF',

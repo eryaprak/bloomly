@@ -61,6 +61,10 @@ export function generateLevel(params: GeneratorParams): LevelConfig {
     ).slice(0, obstacleCount),
   );
 
+  // Stack placement: difficulty >= 0.3 enables 2-3 petal stacks on some cells
+  // We track which positions already have a petal assigned
+  const cellAssignments = new Map<string, Petal[]>();
+
   const petals: Petal[] = placed.map((color, i) => {
     const pos = shuffledPositions[i];
     const isObstacle = obstaclePositions.has(i);
@@ -68,7 +72,6 @@ export function generateLevel(params: GeneratorParams): LevelConfig {
     let isLocked = false;
 
     if (isObstacle && obstacles.includes('ice') && obstacles.includes('lock')) {
-      // Randomly assign obstacle type
       const roll = rng();
       if (roll < 0.4 && obstacles.includes('ice')) {
         iceLayer = rng() < 0.5 ? 1 : 2;
@@ -81,6 +84,12 @@ export function generateLevel(params: GeneratorParams): LevelConfig {
       isLocked = true;
     }
 
+    const cellKey = `${pos.row}_${pos.col}`;
+    const existing = cellAssignments.get(cellKey) ?? [];
+    const layer = existing.length; // layer 0 for first, 1 for second, etc.
+    existing.push({ id: `p_${levelId}_${i}`, color, row: pos.row, col: pos.col, isLocked, iceLayer, isCollected: false, layer });
+    cellAssignments.set(cellKey, existing);
+
     return {
       id: `p_${levelId}_${i}`,
       color,
@@ -89,6 +98,7 @@ export function generateLevel(params: GeneratorParams): LevelConfig {
       isLocked,
       iceLayer,
       isCollected: false,
+      layer,
     };
   });
 

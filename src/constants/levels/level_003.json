@@ -16,7 +16,8 @@
       "col": 3,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_1",
@@ -25,7 +26,8 @@
       "col": 3,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_2",
@@ -34,7 +36,8 @@
       "col": 4,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_3",
@@ -43,7 +46,8 @@
       "col": 1,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_4",
@@ -52,7 +56,8 @@
       "col": 0,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_5",
@@ -61,7 +66,8 @@
       "col": 1,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_6",
@@ -70,7 +76,8 @@
       "col": 3,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_7",
@@ -79,7 +86,8 @@
       "col": 2,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_8",
@@ -88,7 +96,8 @@
       "col": 1,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_9",
@@ -97,7 +106,8 @@
       "col": 0,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_10",
@@ -106,7 +116,8 @@
       "col": 2,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_11",
@@ -115,7 +126,8 @@
       "col": 3,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_12",
@@ -124,7 +136,8 @@
       "col": 4,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_13",
@@ -133,7 +146,8 @@
       "col": 3,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_14",
@@ -142,7 +156,8 @@
       "col": 0,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_15",
@@ -151,7 +166,8 @@
       "col": 4,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_16",
@@ -160,7 +176,8 @@
       "col": 4,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_17",
@@ -169,7 +186,8 @@
       "col": 0,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_18",
@@ -178,7 +196,8 @@
       "col": 1,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_19",
@@ -187,7 +206,8 @@
       "col": 0,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_20",
@@ -196,7 +216,8 @@
       "col": 1,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_21",
@@ -205,7 +226,8 @@
       "col": 4,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_22",
@@ -214,7 +236,8 @@
       "col": 2,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
     },
     {
       "id": "p_3_23",
@@ -223,7 +246,68 @@
       "col": 2,
       "isLocked": false,
       "iceLayer": 0,
-      "isCollected": false
+      "isCollected": false,
+      "layer": 0
+    },
+    {
+      "id": "p_3_24_s",
+      "color": "yellow",
+      "row": 1,
+      "col": 3,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false,
+      "layer": 1
+    },
+    {
+      "id": "p_3_25_s",
+      "color": "red",
+      "row": 3,
+      "col": 3,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false,
+      "layer": 1
+    },
+    {
+      "id": "p_3_26_s",
+      "color": "pink",
+      "row": 2,
+      "col": 0,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false,
+      "layer": 1
+    },
+    {
+      "id": "p_3_27_s",
+      "color": "purple",
+      "row": 2,
+      "col": 2,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false,
+      "layer": 1
+    },
+    {
+      "id": "p_3_28_s",
+      "color": "red",
+      "row": 0,
+      "col": 1,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false,
+      "layer": 1
+    },
+    {
+      "id": "p_3_29_s",
+      "color": "yellow",
+      "row": 1,
+      "col": 0,
+      "isLocked": false,
+      "iceLayer": 0,
+      "isCollected": false,
+      "layer": 1
     }
   ],
   "vases": [

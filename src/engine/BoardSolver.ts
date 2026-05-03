@@ -1,14 +1,14 @@
 import { LevelConfig, PetalColor, Petal } from './types';
 
 interface SolverState {
-  board: Map<string, Petal>;
+  // Map from "row_col_layer" key to petal; we pick top-of-stack each cell
+  stacks: Map<string, Petal[]>;
   dock: PetalColor[];
   vases: Map<PetalColor, number>;
-  movesLeft: number;
   dockSize: number;
 }
 
-function petalKey(row: number, col: number): string {
+function cellKey(row: number, col: number): string {
   return `${row}_${col}`;
 }
 
@@ -55,32 +55,39 @@ function isDockDeadlocked(dock: PetalColor[], dockSize: number): boolean {
 
 /**
  * Greedy solver with look-ahead to avoid dock deadlock.
- * Handles ice layers: each ice layer costs 1 extra move before collection.
+ * Stack-aware: only top-of-stack petals are accessible.
+ * Ice layers: each ice layer costs 1 extra move before collection.
  */
 export function isSolvable(level: LevelConfig): boolean {
   const capacities = new Map<PetalColor, number>(
     level.vases.map((v) => [v.color, v.capacity]),
   );
 
-  // Build board map — skip locked petals
-  const boardMap = new Map<string, Petal>();
+  // Build stacks per cell
+  const stacks = new Map<string, Petal[]>();
   for (const petal of level.petals) {
-    if (!petal.isLocked) {
-      boardMap.set(petalKey(petal.row, petal.col), { ...petal });
-    }
+    if (petal.isLocked) continue;
+    const key = cellKey(petal.row, petal.col);
+    const arr = stacks.get(key) ?? [];
+    arr.push({ ...petal });
+    stacks.set(key, arr);
+  }
+  // Sort each stack by layer ascending (bottom first, top last)
+  for (const [key, arr] of stacks.entries()) {
+    arr.sort((a, b) => (a.layer ?? 0) - (b.layer ?? 0));
+    stacks.set(key, arr);
   }
 
   const vaseFills = new Map<PetalColor, number>(level.colors.map((c) => [c, 0]));
 
   const state: SolverState = {
-    board: boardMap,
+    stacks,
     dock: [],
     vases: vaseFills,
-    movesLeft: level.maxMoves,
     dockSize: level.dockSize,
   };
 
-  const MAX_ITERATIONS = 3000;
+  const MAX_ITERATIONS = 5000;
 
   for (let iter = 0; iter < MAX_ITERATIONS; iter++) {
     // Win check
@@ -89,72 +96,75 @@ export function isSolvable(level: LevelConfig): boolean {
     );
     if (allBloomed) return true;
 
-    if (state.movesLeft <= 0) return false;
     if (isDockDeadlocked(state.dock, state.dockSize)) return false;
 
     const dockCounts = new Map<PetalColor, number>();
     for (const c of state.dock) dockCounts.set(c, (dockCounts.get(c) ?? 0) + 1);
 
-    // Collect accessible petals (non-locked; handle ice as needing extra moves)
-    const candidates: Petal[] = [];
-    for (const petal of state.board.values()) {
-      if (!petal.isCollected) candidates.push(petal);
+    // Collect accessible petals: only top of each non-empty stack
+    const candidates: { key: string; petal: Petal }[] = [];
+    for (const [key, stack] of state.stacks.entries()) {
+      if (stack.length === 0) continue;
+      const top = stack[stack.length - 1];
+      candidates.push({ key, petal: top });
     }
 
     if (candidates.length === 0) {
       // No more petals; check if done
-      const allDone = level.colors.every(
+      return level.colors.every(
         (c) => (state.vases.get(c) ?? 0) >= (capacities.get(c) ?? 6),
       );
-      return allDone;
     }
 
     // Scoring: prefer petals that bring dock closer to a match
-    // Penalise picking a color already over-represented vs others, favour ice-free
+    let bestKey: string | null = null;
     let bestPetal: Petal | null = null;
     let bestScore = -Infinity;
 
     const uniqueDockColors = new Set(state.dock).size;
     const dockFreeSlots = state.dockSize - state.dock.length;
 
-    for (const petal of candidates) {
+    for (const { key, petal } of candidates) {
       const inDock = dockCounts.get(petal.color) ?? 0;
       let score = 0;
 
-      // Highest priority: would complete a triple
       if (inDock >= 2) score += 100;
       else if (inDock === 1) score += 20;
       else {
-        // New color in dock — penalise if dock is getting full and we'd create deadlock
         const wouldMakeUniques = uniqueDockColors + (inDock === 0 ? 1 : 0);
         const slotsAfter = dockFreeSlots - 1;
-        // If all dock slots would be unique colors → likely deadlock risk
         if (slotsAfter === 0 && wouldMakeUniques === state.dockSize) {
           score -= 50;
         }
       }
 
-      // Penalise ice (needs extra moves)
+      // Penalise ice (needs extra hits before collecting)
       score -= petal.iceLayer * 5;
 
       if (score > bestScore) {
         bestScore = score;
+        bestKey = key;
         bestPetal = petal;
       }
     }
 
-    if (bestPetal === null) return false;
+    if (bestKey === null || bestPetal === null) return false;
 
-    const key = petalKey(bestPetal.row, bestPetal.col);
+    const stack = state.stacks.get(bestKey)!;
 
     if (bestPetal.iceLayer > 0) {
+      // Chip ice, keep in stack
       const updated: Petal = { ...bestPetal, iceLayer: bestPetal.iceLayer - 1 };
-      state.board.set(key, updated);
-      state.movesLeft -= 1;
+      state.stacks.set(bestKey, [...stack.slice(0, -1), updated]);
     } else {
-      state.board.delete(key);
+      // Pop petal from stack
+      const newStack = stack.slice(0, -1);
+      if (newStack.length === 0) {
+        state.stacks.delete(bestKey);
+      } else {
+        state.stacks.set(bestKey, newStack);
+      }
       state.dock.push(bestPetal.color);
-      state.movesLeft -= 1;
       state.dock = applyMatches(state.dock, state.vases, capacities);
     }
   }

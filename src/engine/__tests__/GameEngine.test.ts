@@ -67,16 +67,17 @@ describe('GameEngine', () => {
     expect(state.board.length).toBe(level.rows);
     expect(state.board[0].length).toBe(level.cols);
     expect(state.phase).toBe('playing');
-    expect(state.movesLeft).toBe(level.maxMoves);
   });
 
-  // 2. createGame places petals on board
+  // 2. createGame places petals on board (as stacks)
   test('createGame places petals on board correctly', () => {
     const level = makeSimpleLevel();
     const state = createGame(level);
-    expect(state.board[0][0]?.color).toBe('red');
-    expect(state.board[1][0]?.color).toBe('blue');
-    expect(state.board[2][2]).toBeNull();
+    // board[r][c] is now Petal[] (stack), top of stack is last element
+    expect(state.board[0][0].length).toBeGreaterThan(0);
+    expect(state.board[0][0][state.board[0][0].length - 1]?.color).toBe('red');
+    expect(state.board[1][0][state.board[1][0].length - 1]?.color).toBe('blue');
+    expect(state.board[2][2].length).toBe(0);
   });
 
   // 3. selectPetal — valid petal moves to dock
@@ -85,9 +86,9 @@ describe('GameEngine', () => {
     const state = createGame(level);
     const { newState, result } = selectPetal(state, 0, 0);
     expect(result.success).toBe(true);
-    expect(newState.board[0][0]).toBeNull();
+    // Stack at [0][0] should be empty after picking
+    expect(newState.board[0][0].length).toBe(0);
     expect(newState.dock.some((s) => s.petal?.color === 'red')).toBe(true);
-    expect(newState.movesLeft).toBe(level.maxMoves - 1);
   });
 
   // 4. selectPetal — locked petal fails
@@ -108,7 +109,8 @@ describe('GameEngine', () => {
     const state = createGame(level);
     const { newState, result } = selectPetal(state, 0, 0);
     expect(result.success).toBe(true);
-    expect(newState.board[0][0]?.iceLayer).toBe(0);
+    const topPetal = newState.board[0][0][newState.board[0][0].length - 1];
+    expect(topPetal?.iceLayer).toBe(0);
     expect(newState.dock.every((s) => s.petal === null)).toBe(true);
   });
 
@@ -120,7 +122,7 @@ describe('GameEngine', () => {
     const state = createGame(level);
     const { newState, result } = selectPetal(state, 0, 0);
     expect(result.success).toBe(true);
-    expect(newState.board[0][0]).toBeNull();
+    expect(newState.board[0][0].length).toBe(0);
     expect(newState.dock.some((s) => s.petal?.color === 'red')).toBe(true);
   });
 
@@ -256,26 +258,22 @@ describe('GameEngine', () => {
     expect(finalState.phase).toBe('failed');
   });
 
-  // 12. moves depleted → game over
-  test('game over when moves run out', () => {
-    const level = makeSimpleLevel({ maxMoves: 2, dockSize: 5 });
-    let state = createGame(level);
-    let { newState } = selectPetal(state, 0, 0);
-    state = newState;
-    ({ newState } = selectPetal(state, 0, 1));
-    state = newState;
-    // movesLeft should be 0 now
-    expect(checkGameOver(state)).toBe(true);
+  // 12. moves no longer depleted — skipping old movesLeft test
+  // Game over is now dock-overflow only. Just verify checkGameOver works.
+  test('checkGameOver returns false when dock is not full', () => {
+    const level = makeSimpleLevel({ dockSize: 5 });
+    const state = createGame(level);
+    expect(checkGameOver(state)).toBe(false);
   });
 
-  // 13. star calculation: many moves left → 3 stars
-  test('calculateStars returns 3 for high moves-left ratio', () => {
-    expect(calculateStars(15, 20, 0)).toBe(3);
+  // 13. star calculation: high combo → 3 stars
+  test('calculateStars returns 3 for high combo', () => {
+    expect(calculateStars(3)).toBe(3);
   });
 
-  // 14. star calculation: few moves left → 1 star
-  test('calculateStars returns 1 for low moves-left ratio', () => {
-    expect(calculateStars(1, 20, 0)).toBe(1);
+  // 14. star calculation: no combo → 1 star
+  test('calculateStars returns 1 for zero combo', () => {
+    expect(calculateStars(0)).toBe(1);
   });
 
   // 15. combo increments on consecutive blooms

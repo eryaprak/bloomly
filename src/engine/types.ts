@@ -10,6 +10,7 @@ export interface Petal {
   isLocked: boolean;
   iceLayer: number;     // 0=none, 1=single ice, 2=double ice
   isCollected: boolean; // moved to dock
+  layer?: number;       // stack layer: 0=bottom, higher=closer to top (default 0)
 }
 
 export interface Vase {
@@ -48,10 +49,9 @@ export type GamePhase =
 export interface GameState {
   phase: GamePhase;
   level: LevelConfig;
-  board: (Petal | null)[][];
+  board: Petal[][][];   // [row][col] = stack of petals (index 0=bottom, last=top)
   dock: DockSlot[];
   vases: Vase[];
-  movesLeft: number;
   score: number;
   combo: number;
   stars: 0 | 1 | 2 | 3;

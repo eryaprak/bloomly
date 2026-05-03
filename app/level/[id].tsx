@@ -49,11 +49,10 @@ export default function LevelScreen() {
     if (gameState.phase === 'complete') {
       const stars = gameState.stars;
       const score = gameState.score;
-      const movesLeft = gameState.movesLeft;
       setTimeout(() => {
         router.push({
           pathname: '/level-complete',
-          params: { levelId: String(levelId), stars: String(stars), score: String(score), movesLeft: String(movesLeft) },
+          params: { levelId: String(levelId), stars: String(stars), score: String(score) },
         });
       }, 500);
     } else if (gameState.phase === 'failed') {

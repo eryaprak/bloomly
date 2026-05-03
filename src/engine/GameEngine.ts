@@ -13,16 +13,27 @@ import { addToDock, findMatch, removeFromDock, isDockFull } from './DockManager'
 // ─── Factory ─────────────────────────────────────────────────────────────────
 
 export function createGame(level: LevelConfig): GameState {
-  // Build 2D board filled with nulls
-  const board: (Petal | null)[][] = Array.from({ length: level.rows }, () =>
-    Array<Petal | null>(level.cols).fill(null),
+  // Build 3D board: [row][col] = Petal[] stack (index 0=bottom, last=top)
+  const board: Petal[][][] = Array.from({ length: level.rows }, () =>
+    Array.from({ length: level.cols }, () => [] as Petal[]),
   );
 
-  // Place petals onto board
+  // Group petals by (row, col), sort by layer ascending, push onto stack
+  const cellMap = new Map<string, Petal[]>();
   for (const petal of level.petals) {
     if (petal.row >= 0 && petal.row < level.rows && petal.col >= 0 && petal.col < level.cols) {
-      board[petal.row][petal.col] = { ...petal, isCollected: false };
+      const key = `${petal.row}_${petal.col}`;
+      const arr = cellMap.get(key) ?? [];
+      arr.push({ ...petal, isCollected: false });
+      cellMap.set(key, arr);
     }
+  }
+
+  for (const [key, petals] of cellMap.entries()) {
+    const [r, c] = key.split('_').map(Number);
+    // Sort by layer ascending: layer 0 = bottom, highest layer = top
+    petals.sort((a, b) => (a.layer ?? 0) - (b.layer ?? 0));
+    board[r][c] = petals;
   }
 
   const dock: DockSlot[] = Array.from({ length: level.dockSize }, () => ({ petal: null }));
@@ -36,7 +47,6 @@ export function createGame(level: LevelConfig): GameState {
     board,
     dock,
     vases,
-    movesLeft: level.maxMoves,
     score: 0,
     combo: 0,
     stars: 0,
@@ -67,10 +77,13 @@ export function selectPetal(
     return { newState: state, result: failResult };
   }
 
-  const petal = state.board[row]?.[col];
-  if (!petal) {
+  const stack = state.board[row]?.[col];
+  if (!stack || stack.length === 0) {
     return { newState: state, result: failResult };
   }
+
+  // Only the top-of-stack is selectable
+  const petal = stack[stack.length - 1];
 
   // Guard: locked petal
   if (petal.isLocked) {
@@ -80,15 +93,20 @@ export function selectPetal(
   // Ice layer handling
   if (petal.iceLayer > 0) {
     // Reduce ice by 1; petal is NOT collected yet
-    const newBoard = state.board.map((r, ri) =>
-      r.map((p, ci) =>
-        ri === row && ci === col && p ? { ...p, iceLayer: p.iceLayer - 1 } : p,
-      ),
+    const newBoard = state.board.map((rowArr, ri) =>
+      rowArr.map((cellStack, ci) => {
+        if (ri !== row || ci !== col) return cellStack;
+        const last = cellStack[cellStack.length - 1];
+        if (!last) return cellStack;
+        return [
+          ...cellStack.slice(0, -1),
+          { ...last, iceLayer: last.iceLayer - 1 },
+        ];
+      }),
     );
     const newState: GameState = {
       ...state,
       board: newBoard,
-      movesLeft: state.movesLeft - 1,
     };
     const gameOver = checkGameOver(newState);
     return {
@@ -108,16 +126,18 @@ export function selectPetal(
   const { newDock, overflow } = addToDock(state.dock, petal);
   if (overflow) {
     // Dock full, cannot add
-    const gameOver = true;
     return {
       newState: { ...state, phase: 'failed' },
-      result: { ...failResult, gameOver },
+      result: { ...failResult, gameOver: true },
     };
   }
 
-  // Remove petal from board
-  const newBoard = state.board.map((r, ri) =>
-    r.map((p, ci) => (ri === row && ci === col ? null : p)),
+  // Remove top petal from stack
+  const newBoard = state.board.map((rowArr, ri) =>
+    rowArr.map((cellStack, ci) => {
+      if (ri !== row || ci !== col) return cellStack;
+      return cellStack.slice(0, -1); // pop top
+    }),
   );
 
   let currentDock = newDock;
@@ -150,25 +170,19 @@ export function selectPetal(
   }
 
   // Combo only resets when no match occurred AND no bloom is pending
-  // This allows building up to the next bloom without losing combo
   if (!dockMatch && state.combo > 0) {
     // Keep combo alive during build-up moves after a bloom
-    // Only reset if we haven't had a recent bloom (combo was already 0)
-    // combo stays so consecutive blooms can chain
   } else if (!dockMatch) {
     combo = 0;
   }
 
   // ─── Bonus Detection ────────────────────────────────────────────────────────
-  // Count filled slots in the dock BEFORE adding current petal (use state.dock)
   const filledBeforeAdd = state.dock.filter((s) => s.petal !== null).length;
 
   let bonusType: BonusType = null;
   let bonusGold = 0;
 
   if (dockMatch) {
-    // COMBO: Adding this petal immediately triggered a match (instant clear)
-    // The petal was the 3rd of its color — dock had exactly 2 of its color before
     const colorInDockBefore = state.dock.filter(
       (s) => s.petal?.color === petal.color,
     ).length;
@@ -177,35 +191,28 @@ export function selectPetal(
       bonusGold = 50;
     }
 
-    // CHAIN: combo counter built up (2+ consecutive match moves)
     if (combo >= 2 && bonusType === null) {
       bonusType = 'chain';
       bonusGold = combo * 30;
     } else if (combo >= 2) {
-      // Already 'combo' — upgrade to chain and stack gold
       bonusType = 'chain';
       bonusGold = 50 + combo * 30;
     }
 
-    // CLOSE CALL: dock was 5+ filled when we made the match
     if (filledBeforeAdd >= 5 && bonusType === null) {
       bonusType = 'close_call';
       bonusGold = 30;
     } else if (filledBeforeAdd >= 5) {
-      // Stack close_call gold on top of existing bonus
       bonusGold += 30;
     }
   }
   // ────────────────────────────────────────────────────────────────────────────
-
-  const movesLeft = state.movesLeft - 1;
 
   const newState: GameState = {
     ...state,
     board: newBoard,
     dock: currentDock,
     vases: currentVases,
-    movesLeft,
     score: state.score + scoreGain,
     combo,
     phase: 'playing',
@@ -215,7 +222,7 @@ export function selectPetal(
   const gameOver = !levelComplete && checkGameOver(newState);
 
   const finalPhase = levelComplete ? 'complete' : gameOver ? 'failed' : 'playing';
-  const stars = levelComplete ? calculateStars(movesLeft, state.level.maxMoves, combo) : state.stars;
+  const stars = levelComplete ? calculateStars(combo) : state.stars;
 
   return {
     newState: {
@@ -281,7 +288,7 @@ export function checkLevelComplete(vases: Vase[]): boolean {
 }
 
 export function checkGameOver(state: GameState): boolean {
-  if (state.movesLeft <= 0) return true;
+  // Only game over if dock is full and deadlocked (no possible match)
   if (isDockFull(state.dock) && findMatch(state.dock) === null) return true;
   return false;
 }
@@ -289,13 +296,9 @@ export function checkGameOver(state: GameState): boolean {
 // ─── Star Calculation ─────────────────────────────────────────────────────────
 
 export function calculateStars(
-  movesLeft: number,
-  maxMoves: number,
   combo: number,
 ): 0 | 1 | 2 | 3 {
-  const ratio = movesLeft / maxMoves;
-  if (ratio >= 0.5 || combo >= 3) return 3;
-  if (ratio >= 0.25) return 2;
-  if (ratio >= 0) return 1;
-  return 0;
+  if (combo >= 3) return 3;
+  if (combo >= 1) return 2;
+  return 1;
 }
