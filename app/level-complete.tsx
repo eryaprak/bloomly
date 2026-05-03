@@ -31,10 +31,11 @@ function getRewardGold(tier: RewardTier): number {
 export default function LevelCompleteScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { levelId, stars: starsParam, score: scoreParam } = useLocalSearchParams<{
+  const { levelId, stars: starsParam, score: scoreParam, movesLeft: movesLeftParam } = useLocalSearchParams<{
     levelId: string;
     stars: string;
     score: string;
+    movesLeft: string;
   }>();
 
   const completeLevel = usePlayerStore((s) => s.completeLevel);
@@ -43,6 +44,8 @@ export default function LevelCompleteScreen() {
   const levelId_ = parseInt(levelId ?? '1', 10);
   const stars = parseInt(starsParam ?? '1', 10) as 0 | 1 | 2 | 3;
   const score = parseInt(scoreParam ?? '0', 10);
+  const movesLeft = parseInt(movesLeftParam ?? '0', 10);
+  const efficiencyBonus = movesLeft * 10;
 
   const [rewardTier] = useState<RewardTier>(getRewardTier(stars));
   const [rewardGold] = useState(() => getRewardGold(getRewardTier(stars)));
