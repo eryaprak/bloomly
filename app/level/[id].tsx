@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   Text,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
 import { usePlayerStore } from '@/stores/playerStore';
@@ -84,21 +83,19 @@ export default function LevelScreen() {
 
   if (!gameState) {
     return (
-      <LinearGradient
-        colors={['#1A0A2E', '#2D1B52', '#1A0A2E']}
-        style={styles.loading}
-      >
-        <Text style={styles.loadingText}>Loading...</Text>
-      </LinearGradient>
+      <View style={styles.bgBase}>
+        <View style={styles.bgMid} pointerEvents="none" />
+        <View style={[styles.loading]}>
+          <Text style={styles.loadingText}>Loading...</Text>
+        </View>
+      </View>
     );
   }
 
   return (
-    <LinearGradient
-      colors={['#0F0720', '#1E0D40', '#2A1260', '#1E0D40', '#0F0720']}
-      locations={[0, 0.25, 0.5, 0.75, 1]}
-      style={styles.gradient}
-    >
+    <View style={styles.bgBase}>
+      {/* Pseudo-gradient: lighter centre overlay */}
+      <View style={styles.bgMid} pointerEvents="none" />
       <SafeAreaView style={styles.safe}>
         <View style={styles.container}>
           <HUD levelId={levelId} />
@@ -116,13 +113,21 @@ export default function LevelScreen() {
           <BloomAnimation color={bloomColor} onComplete={handleBloomComplete} />
         )}
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  gradient: {
+  // Deep space-purple base — covers entire screen
+  bgBase: {
     flex: 1,
+    backgroundColor: '#0F0720',
+  },
+  // Semi-transparent lighter band in the middle for subtle depth
+  bgMid: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#2A1260',
+    opacity: 0.35,
   },
   safe: {
     flex: 1,
