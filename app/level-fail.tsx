@@ -40,13 +40,13 @@ export default function LevelFailScreen() {
   const handleBuyMoves = () => {
     const success = spendGold(100);
     if (success) {
-      router.push(`/level/${levelId_}`);
+      router.replace(`/level/${levelId_}`);
     }
   };
 
   const handleWatchAd = () => {
     // Placeholder: rewarded video
-    router.push(`/level/${levelId_}`);
+    router.replace(`/level/${levelId_}`);
   };
 
   return (
