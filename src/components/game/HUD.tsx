@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useGameStore } from '@/stores/gameStore';
 import { usePlayerStore } from '@/stores/playerStore';
 import { useLifeTimer } from '@/hooks/useLifeTimer';
+import BonusPopup from '@/components/game/BonusPopup';
+import { BonusType } from '@/engine/types';
 
 interface HUDProps {
   levelId: number;
@@ -13,6 +15,7 @@ interface HUDProps {
 export default function HUD({ levelId, onBooster }: HUDProps) {
   const { t } = useTranslation();
   const gameState = useGameStore((s) => s.gameState);
+  const lastResult = useGameStore((s) => s.lastResult);
   const gold = usePlayerStore((s) => s.gold);
   const { lives, maxLives, countdown } = useLifeTimer();
 
@@ -32,6 +35,25 @@ export default function HUD({ levelId, onBooster }: HUDProps) {
       ]).start();
     }
   }, [score, scoreFlash]);
+
+  // ── Bonus popup state ──────────────────────────────────────────────────────
+  const [activeBonusType, setActiveBonusType] = useState<BonusType>(null);
+  const [activeBonusGold, setActiveBonusGold] = useState(0);
+  const bonusKey = useRef(0);
+
+  useEffect(() => {
+    if (lastResult?.bonusType && lastResult.bonusGold > 0) {
+      bonusKey.current += 1;
+      setActiveBonusType(lastResult.bonusType);
+      setActiveBonusGold(lastResult.bonusGold);
+    }
+  }, [lastResult]);
+
+  const handleBonusDone = () => {
+    setActiveBonusType(null);
+    setActiveBonusGold(0);
+  };
+  // ──────────────────────────────────────────────────────────────────────────
 
   const isMovesLow = movesLeft <= 5;
   const movesColor = isMovesLow ? '#FF6B35' : '#FFFFFF';
@@ -65,11 +87,20 @@ export default function HUD({ levelId, onBooster }: HUDProps) {
         </View>
       </View>
 
-      {/* Score row */}
+      {/* Score row — bonus popup floats above it */}
       <View style={styles.scoreRow}>
         <Animated.Text style={[styles.scoreText, { transform: [{ scale: scoreFlash }] }]}>
           {score.toLocaleString()}
         </Animated.Text>
+
+        {activeBonusType && (
+          <BonusPopup
+            key={bonusKey.current}
+            bonusType={activeBonusType}
+            bonusGold={activeBonusGold}
+            onDone={handleBonusDone}
+          />
+        )}
       </View>
 
       {/* Booster row */}

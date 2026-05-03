@@ -1,5 +1,7 @@
 export type PetalColor = 'red' | 'pink' | 'purple' | 'yellow' | 'green' | 'blue';
 
+export type BonusType = 'combo' | 'chain' | 'close_call' | null;
+
 export interface Petal {
   id: string;
   color: PetalColor;
@@ -63,6 +65,8 @@ export interface MoveResult {
   gameOver: boolean;
   levelComplete: boolean;
   comboCount: number;
+  bonusType: BonusType;
+  bonusGold: number;
 }
 
 export interface GeneratorParams {

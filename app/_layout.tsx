@@ -1,9 +1,12 @@
 import { useEffect } from 'react';
+import { LogBox } from 'react-native';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import '@/i18n';
 import { AudioService } from '@/services/AudioService';
 import { usePlayerStore } from '@/stores/playerStore';
+
+LogBox.ignoreAllLogs();
 
 function AppInit() {
   const updateStreak = usePlayerStore((s) => s.updateStreak);

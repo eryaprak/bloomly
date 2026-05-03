@@ -6,6 +6,7 @@ import {
   PetalColor,
   Vase,
   DockSlot,
+  BonusType,
 } from './types';
 import { addToDock, findMatch, removeFromDock, isDockFull } from './DockManager';
 
@@ -57,6 +58,8 @@ export function selectPetal(
     gameOver: false,
     levelComplete: false,
     comboCount: 0,
+    bonusType: null,
+    bonusGold: 0,
   };
 
   // Guard: not in playing phase
@@ -95,6 +98,8 @@ export function selectPetal(
         success: true,
         gameOver,
         comboCount: state.combo,
+        bonusType: null,
+        bonusGold: 0,
       },
     };
   }
@@ -154,6 +159,45 @@ export function selectPetal(
     combo = 0;
   }
 
+  // ─── Bonus Detection ────────────────────────────────────────────────────────
+  // Count filled slots in the dock BEFORE adding current petal (use state.dock)
+  const filledBeforeAdd = state.dock.filter((s) => s.petal !== null).length;
+
+  let bonusType: BonusType = null;
+  let bonusGold = 0;
+
+  if (dockMatch) {
+    // COMBO: Adding this petal immediately triggered a match (instant clear)
+    // The petal was the 3rd of its color — dock had exactly 2 of its color before
+    const colorInDockBefore = state.dock.filter(
+      (s) => s.petal?.color === petal.color,
+    ).length;
+    if (colorInDockBefore === 2) {
+      bonusType = 'combo';
+      bonusGold = 50;
+    }
+
+    // CHAIN: combo counter built up (2+ consecutive match moves)
+    if (combo >= 2 && bonusType === null) {
+      bonusType = 'chain';
+      bonusGold = combo * 30;
+    } else if (combo >= 2) {
+      // Already 'combo' — upgrade to chain and stack gold
+      bonusType = 'chain';
+      bonusGold = 50 + combo * 30;
+    }
+
+    // CLOSE CALL: dock was 5+ filled when we made the match
+    if (filledBeforeAdd >= 5 && bonusType === null) {
+      bonusType = 'close_call';
+      bonusGold = 30;
+    } else if (filledBeforeAdd >= 5) {
+      // Stack close_call gold on top of existing bonus
+      bonusGold += 30;
+    }
+  }
+  // ────────────────────────────────────────────────────────────────────────────
+
   const movesLeft = state.movesLeft - 1;
 
   const newState: GameState = {
@@ -187,6 +231,8 @@ export function selectPetal(
       gameOver,
       levelComplete,
       comboCount: combo,
+      bonusType,
+      bonusGold,
     },
   };
 }
