@@ -10,7 +10,7 @@ import {
 import {
   Dimensions,
   GestureResponderEvent,
-  Pressable,
+
   View,
   StyleSheet,
   LayoutChangeEvent,
@@ -151,15 +151,18 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
 
   const handleTouch = useCallback(
     (e: GestureResponderEvent) => {
+      console.log('[TOUCH] fired', { gameState: !!gameState, isAnimating, boardLeft, viewWidth });
       if (!gameState || isAnimating) return;
       const touchX = e.nativeEvent.locationX;
       const touchY = e.nativeEvent.locationY;
 
       const col = Math.floor((touchX - boardLeft) / (cellSize + CELL_PADDING));
       const row = Math.floor(touchY / (cellSize + CELL_PADDING));
+      console.log('[TOUCH] coords', { touchX, touchY, row, col, rows, cols });
 
       if (row < 0 || row >= rows || col < 0 || col >= cols) return;
       if (!board[row]?.[col]) return;
+      console.log('[TOUCH] picking petal at', row, col, board[row][col]?.color);
 
       setSelectedCell({ row, col });
       pickPetal(row, col);
@@ -172,12 +175,13 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
   if (!gameState) return null;
 
   return (
-    <Pressable onPress={handleTouch}>
-      <View
-        style={[styles.container, { height: boardHeight }]}
-        onLayout={handleLayout}
-      >
-        <Canvas style={{ width: viewWidth, height: boardHeight }}>
+    <View
+      style={[styles.container, { height: boardHeight }]}
+      onLayout={handleLayout}
+      onStartShouldSetResponder={() => true}
+      onResponderRelease={handleTouch}
+    >
+        <Canvas style={{ width: viewWidth, height: boardHeight }} pointerEvents="none">
           {board.map((rowArr, ri) =>
             rowArr.map((petal, ci) => {
               if (!petal) return null;
@@ -200,8 +204,7 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
             }),
           )}
         </Canvas>
-      </View>
-    </Pressable>
+    </View>
   );
 }
 

@@ -25,6 +25,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     const gameState = get().gameState;
     if (!gameState || get().isAnimating) return;
     const { newState, result } = selectPetal(gameState, row, col);
+    console.log('[PICK]', { row, col, success: result.success, dockMatch: result.dockMatch, dock: newState.dock.map(s => s.petal?.color ?? 'empty') });
     set({ gameState: newState, lastResult: result });
   },
 
