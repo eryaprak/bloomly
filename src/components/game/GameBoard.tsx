@@ -19,6 +19,7 @@ import Animated, {
 
 import { useGameStore } from '@/stores/gameStore';
 import { PetalColor, Petal } from '@/engine/types';
+import { PETAL_RICH, THEME } from '@/constants/theme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -34,24 +35,6 @@ const PETAL_SOURCES: Record<PetalColor, any> = {
   blue:   require('@assets/petals/petal_blue.png'),
 };
 
-const GLOW_COLORS: Record<PetalColor, string> = {
-  red:    '#FF4444',
-  pink:   '#FF69B4',
-  purple: '#A855F7',
-  yellow: '#FACC15',
-  green:  '#22C55E',
-  blue:   '#3B82F6',
-};
-
-const HIGHLIGHT_COLORS: Record<PetalColor, string> = {
-  red:    'rgba(255,170,170,0.42)',
-  pink:   'rgba(255,210,230,0.42)',
-  purple: 'rgba(210,160,255,0.42)',
-  yellow: 'rgba(255,252,160,0.48)',
-  green:  'rgba(160,255,190,0.42)',
-  blue:   'rgba(140,210,255,0.42)',
-};
-
 // ─── Top Petal Cell (fully interactive) ──────────────────────────────────────
 
 interface TopPetalCellProps {
@@ -63,40 +46,43 @@ interface TopPetalCellProps {
 }
 
 function TopPetalCell({ petal, size, isSelected, isRevealing, onPress }: TopPetalCellProps) {
-  const scale = useSharedValue(isRevealing ? 0.8 : 1);
-  const opacity = useSharedValue(isRevealing ? 0.45 : 1);
+  const scale = useSharedValue(isRevealing ? 0.75 : 1);
+  const opacity = useSharedValue(isRevealing ? 0.35 : 1);
+  const rotate = useSharedValue(isRevealing ? '-5deg' : '0deg');
   const pulseScale = useSharedValue(1);
   const pulseOpacity = useSharedValue(0);
 
-  // Reveal animation when a layer above was removed
   useEffect(() => {
     if (isRevealing) {
-      scale.value = withSpring(1, { damping: 12, stiffness: 180 });
-      opacity.value = withTiming(1, { duration: 280 });
+      scale.value = withSpring(1, { damping: 11, stiffness: 190 });
+      opacity.value = withTiming(1, { duration: 260 });
+      rotate.value = withSequence(
+        withTiming('5deg', { duration: 100 }),
+        withSpring('0deg', { damping: 8, stiffness: 200 }),
+      );
     }
-  }, [isRevealing, scale, opacity]);
+  }, [isRevealing, scale, opacity, rotate]);
 
-  // Continuous pulse animation when selected
   useEffect(() => {
     if (isSelected) {
-      pulseOpacity.value = 0.6;
+      pulseOpacity.value = 0.7;
       pulseScale.value = withRepeat(
         withSequence(
-          withTiming(1.18, { duration: 380 }),
-          withTiming(1.0, { duration: 380 }),
+          withTiming(1.22, { duration: 360 }),
+          withTiming(1.0, { duration: 360 }),
         ),
         -1,
         true,
       );
     } else {
       cancelAnimation(pulseScale);
-      pulseScale.value = withTiming(1, { duration: 150 });
-      pulseOpacity.value = withTiming(0, { duration: 150 });
+      pulseScale.value = withTiming(1, { duration: 140 });
+      pulseOpacity.value = withTiming(0, { duration: 140 });
     }
   }, [isSelected, pulseScale, pulseOpacity]);
 
   const animStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
+    transform: [{ scale: scale.value }, { rotate: rotate.value }],
     opacity: opacity.value,
   }));
 
@@ -108,14 +94,13 @@ function TopPetalCell({ petal, size, isSelected, isRevealing, onPress }: TopPeta
   const handlePress = useCallback(() => {
     if (petal.isLocked) return;
     scale.value = withSequence(
-      withTiming(0.80, { duration: 70 }),
-      withSpring(1, { damping: 10, stiffness: 200 }),
+      withTiming(0.76, { duration: 65 }),
+      withSpring(1, { damping: 9, stiffness: 220 }),
     );
     onPress();
   }, [petal.isLocked, scale, onPress]);
 
-  const glowColor = GLOW_COLORS[petal.color];
-  const highlightColor = HIGHLIGHT_COLORS[petal.color];
+  const rich = PETAL_RICH[petal.color];
 
   return (
     <Pressable onPress={handlePress} style={{ width: size, height: size }}>
@@ -127,14 +112,42 @@ function TopPetalCell({ petal, size, isSelected, isRevealing, onPress }: TopPeta
             StyleSheet.absoluteFill,
             styles.pulseRing,
             {
-              borderColor: glowColor,
+              borderColor: rich.glow,
               borderRadius: size * 0.5,
-              top: -(size * 0.12),
-              left: -(size * 0.12),
-              right: -(size * 0.12),
-              bottom: -(size * 0.12),
+              top: -(size * 0.14),
+              left: -(size * 0.14),
+              right: -(size * 0.14),
+              bottom: -(size * 0.14),
             },
             pulseRingStyle,
+          ]}
+        />
+
+        {/* Tile backing card (cream/white, gives depth) */}
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              borderRadius: size * 0.22,
+              backgroundColor: 'rgba(255,252,240,0.20)',
+              borderWidth: isSelected ? 2 : 1,
+              borderColor: isSelected ? rich.glow : 'rgba(255,235,160,0.25)',
+            },
+          ]}
+        />
+
+        {/* Outer soft glow shadow */}
+        <View
+          style={[
+            styles.shadowLayerSoft,
+            {
+              width: size + 6,
+              height: size + 6,
+              borderRadius: (size + 6) / 2,
+              backgroundColor: rich.glow,
+              left: -3,
+              top: 3,
+            },
           ]}
         />
 
@@ -146,24 +159,9 @@ function TopPetalCell({ petal, size, isSelected, isRevealing, onPress }: TopPeta
               width: size - 2,
               height: size - 2,
               borderRadius: (size - 2) / 2,
-              backgroundColor: glowColor,
-              left: 3,
-              top: 5,
-            },
-          ]}
-        />
-
-        {/* Soft shadow */}
-        <View
-          style={[
-            styles.shadowLayerSoft,
-            {
-              width: size + 4,
-              height: size + 4,
-              borderRadius: (size + 4) / 2,
-              backgroundColor: glowColor,
-              left: -2,
-              top: 2,
+              backgroundColor: rich.shadow,
+              left: 2,
+              top: 6,
             },
           ]}
         />
@@ -174,29 +172,31 @@ function TopPetalCell({ petal, size, isSelected, isRevealing, onPress }: TopPeta
           resizeMode="contain"
         />
 
+        {/* Inner specular highlight (top-left shine) */}
         <View
           style={[
             styles.innerHighlight,
             {
-              width: size * 0.58,
-              height: size * 0.38,
-              borderRadius: size * 0.22,
-              backgroundColor: highlightColor,
-              top: size * 0.08,
-              left: size * 0.16,
+              width: size * 0.62,
+              height: size * 0.42,
+              borderRadius: size * 0.24,
+              backgroundColor: rich.highlight,
+              top: size * 0.07,
+              left: size * 0.14,
             },
           ]}
         />
 
+        {/* Bottom vignette */}
         <View
           style={[
             styles.bottomShadow,
             {
-              width: size * 0.7,
-              height: size * 0.25,
-              borderRadius: size * 0.15,
-              bottom: size * 0.06,
-              left: size * 0.15,
+              width: size * 0.72,
+              height: size * 0.28,
+              borderRadius: size * 0.16,
+              bottom: size * 0.05,
+              left: size * 0.14,
             },
           ]}
         />
@@ -238,11 +238,10 @@ function TopPetalCell({ petal, size, isSelected, isRevealing, onPress }: TopPeta
 interface UnderPetalProps {
   color: PetalColor;
   size: number;
-  layerIndex: number; // 0 = directly under top, 1 = two below top, etc.
+  layerIndex: number;
 }
 
 function UnderPetal({ color, size, layerIndex }: UnderPetalProps) {
-  // Each layer further down is smaller and darker
   const scaleFactor = 0.82 - layerIndex * 0.06;
   const scaledSize = Math.floor(size * scaleFactor);
   const offset = Math.floor((size - scaledSize) / 2);
@@ -264,12 +263,11 @@ function UnderPetal({ color, size, layerIndex }: UnderPetalProps) {
         style={{ width: scaledSize, height: scaledSize }}
         resizeMode="contain"
       />
-      {/* Dark overlay to indicate it's blocked */}
       <View
         style={[
           StyleSheet.absoluteFill,
           {
-            backgroundColor: 'rgba(0,0,0,0.55)',
+            backgroundColor: `rgba(0,0,0,${0.62 + layerIndex * 0.08})`,
             borderRadius: scaledSize * 0.18,
           },
         ]}
@@ -284,7 +282,7 @@ interface StackCellProps {
   stack: Petal[];
   size: number;
   isSelected: boolean;
-  prevTopId: string | null; // id of top petal from previous render (to detect reveal)
+  prevTopId: string | null;
   onPressTop: () => void;
 }
 
@@ -292,14 +290,11 @@ function StackCell({ stack, size, isSelected, prevTopId, onPressTop }: StackCell
   if (stack.length === 0) return null;
 
   const topPetal = stack[stack.length - 1];
-  // A reveal happens when the previous top was removed and a new petal is now on top
   const isRevealing = prevTopId !== null && prevTopId !== topPetal.id;
 
   return (
     <View style={{ width: size, height: size }}>
-      {/* Render under-layers from bottom (most buried) to just below top */}
       {stack.slice(0, -1).map((underPetal, idx) => {
-        // layerIndex: 0 = directly under top, higher = more buried
         const layerIndex = stack.length - 2 - idx;
         return (
           <UnderPetal
@@ -310,8 +305,6 @@ function StackCell({ stack, size, isSelected, prevTopId, onPressTop }: StackCell
           />
         );
       })}
-
-      {/* Top petal — interactive */}
       <View style={StyleSheet.absoluteFill}>
         <TopPetalCell
           petal={topPetal}
@@ -340,7 +333,6 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null);
   const [viewWidth, setViewWidth] = useState<number>(SCREEN_WIDTH);
 
-  // Track previous top-petal ids to detect reveal events
   const prevTopIds = useRef<Map<string, string>>(new Map());
 
   React.useEffect(() => {
@@ -377,7 +369,6 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
       const stack = board[row]?.[col];
       if (!stack || stack.length === 0) return;
 
-      // Save current top ids before pick
       const newMap = new Map<string, string>();
       for (let r = 0; r < board.length; r++) {
         for (let c = 0; c < (board[r]?.length ?? 0); c++) {
@@ -398,7 +389,6 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
 
   if (!gameState) return null;
 
-  // Grid slot backgrounds
   const gridSlots: { left: number; top: number }[] = [];
   for (let ri = 0; ri < rows; ri++) {
     for (let ci = 0; ci < cols; ci++) {
@@ -417,9 +407,12 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
       <View
         style={[
           styles.boardFrame,
-          { width: boardWidth + 24, height: boardHeight + 24 },
+          { width: boardWidth + 28, height: boardHeight + 28 },
         ]}
       >
+        {/* Frosted glass inner top highlight */}
+        <View style={styles.boardTopHighlight} />
+
         <View style={[styles.boardArea, { width: boardWidth, height: boardHeight }]}>
 
           {/* Grid slot backgrounds */}
@@ -434,7 +427,7 @@ export default function GameBoard({ onBloom }: GameBoardProps) {
                   top,
                   width: cellSize,
                   height: cellSize,
-                  borderRadius: cellSize * 0.2,
+                  borderRadius: cellSize * 0.22,
                 },
               ]}
             />
@@ -481,35 +474,50 @@ const styles = StyleSheet.create({
   boardFrame: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(15, 8, 35, 0.55)',
-    borderRadius: 20,
+    backgroundColor: 'rgba(255,248,235,0.10)',
+    borderRadius: 22,
     borderWidth: 1.5,
-    borderColor: 'rgba(168, 85, 247, 0.3)',
-    shadowColor: '#A855F7',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.4,
-    shadowRadius: 20,
-    elevation: 12,
+    borderColor: THEME.board.border,
+    shadowColor: THEME.board.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 22,
+    elevation: 14,
+    overflow: 'visible',
+  },
+  boardTopHighlight: {
+    position: 'absolute',
+    top: 0,
+    left: 24,
+    right: 24,
+    height: 2,
+    backgroundColor: 'rgba(255,240,170,0.35)',
+    borderRadius: 1,
   },
   boardArea: {
     position: 'relative',
   },
   gridSlot: {
-    backgroundColor: 'rgba(255,255,255,0.04)',
+    backgroundColor: 'rgba(255,248,220,0.13)',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.07)',
+    borderColor: 'rgba(212,175,55,0.18)',
+    shadowColor: '#C8A850',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 1,
   },
   pulseRing: {
     position: 'absolute',
-    borderWidth: 2.5,
+    borderWidth: 3,
   },
   shadowLayer: {
     position: 'absolute',
-    opacity: 0.35,
+    opacity: 0.42,
   },
   shadowLayerSoft: {
     position: 'absolute',
-    opacity: 0.12,
+    opacity: 0.13,
   },
   innerHighlight: {
     position: 'absolute',
@@ -518,7 +526,7 @@ const styles = StyleSheet.create({
   },
   bottomShadow: {
     position: 'absolute',
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.32)',
   },
   iceOverlay: {
     backgroundColor: '#AADDFF',

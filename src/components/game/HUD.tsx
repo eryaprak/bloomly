@@ -6,6 +6,7 @@ import { usePlayerStore } from '@/stores/playerStore';
 import { useLifeTimer } from '@/hooks/useLifeTimer';
 import BonusPopup from '@/components/game/BonusPopup';
 import { BonusType } from '@/engine/types';
+import { THEME } from '@/constants/theme';
 
 interface HUDProps {
   levelId: number;
@@ -21,7 +22,6 @@ export default function HUD({ levelId, onBooster }: HUDProps) {
 
   const score = gameState?.score ?? 0;
 
-  // Score flash animation
   const scoreFlash = useRef(new Animated.Value(1)).current;
   const prevScore = useRef(score);
 
@@ -29,7 +29,7 @@ export default function HUD({ levelId, onBooster }: HUDProps) {
     if (score !== prevScore.current) {
       prevScore.current = score;
       Animated.sequence([
-        Animated.timing(scoreFlash, { toValue: 1.35, duration: 120, useNativeDriver: true }),
+        Animated.timing(scoreFlash, { toValue: 1.38, duration: 110, useNativeDriver: true }),
         Animated.spring(scoreFlash, { toValue: 1, useNativeDriver: true }),
       ]).start();
     }
@@ -52,10 +52,12 @@ export default function HUD({ levelId, onBooster }: HUDProps) {
     setActiveBonusType(null);
     setActiveBonusGold(0);
   };
-  // ──────────────────────────────────────────────────────────────────────────
 
   return (
     <View style={styles.container}>
+      {/* Top golden highlight */}
+      <View style={styles.topHighlight} />
+
       {/* Top row */}
       <View style={styles.topRow}>
         <View style={styles.centerChip}>
@@ -78,7 +80,7 @@ export default function HUD({ levelId, onBooster }: HUDProps) {
         </View>
       </View>
 
-      {/* Score row — bonus popup floats above it */}
+      {/* Score row */}
       <View style={styles.scoreRow}>
         <Animated.Text style={[styles.scoreText, { transform: [{ scale: scoreFlash }] }]}>
           {score.toLocaleString()}
@@ -119,10 +121,24 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 12,
     paddingTop: 8,
-    paddingBottom: 6,
-    backgroundColor: 'rgba(255,255,255,0.08)',
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(180,120,255,0.15)',
+    paddingBottom: 7,
+    backgroundColor: THEME.hud.bg,
+    borderBottomWidth: 1.5,
+    borderBottomColor: THEME.hud.border,
+    shadowColor: THEME.hud.shadow,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 8,
+  },
+  topHighlight: {
+    position: 'absolute',
+    top: 0,
+    left: 20,
+    right: 20,
+    height: 1.5,
+    backgroundColor: 'rgba(255,235,100,0.30)',
+    borderRadius: 1,
   },
   topRow: {
     flexDirection: 'row',
@@ -132,23 +148,29 @@ const styles = StyleSheet.create({
   },
   hudChip: {
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    borderRadius: 12,
+    backgroundColor: THEME.hud.chipBg,
+    borderRadius: 14,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    minWidth: 72,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
+    minWidth: 76,
+    borderWidth: 1.5,
+    borderColor: THEME.hud.chipBorder,
+    shadowColor: THEME.hud.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+    elevation: 4,
   },
   centerChip: {
     alignItems: 'center',
     flex: 1,
   },
   levelText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
+    color: '#FFF8E0',
+    fontWeight: '800',
     fontSize: 15,
-    textShadowColor: 'rgba(168,85,247,0.8)',
+    letterSpacing: 0.5,
+    textShadowColor: 'rgba(212,175,55,0.7)',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 8,
   },
@@ -158,29 +180,38 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   heart: {
-    fontSize: 14,
+    fontSize: 13,
     marginHorizontal: 1,
   },
   heartFull: {
     color: '#FF4444',
+    textShadowColor: 'rgba(255,50,50,0.5)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 4,
   },
   heartEmpty: {
-    color: '#555555',
+    color: '#4A3A2A',
   },
   countdownText: {
-    color: '#AAAAAA',
+    color: '#C8A850',
     fontSize: 11,
     marginLeft: 4,
+    fontWeight: '600',
   },
   chipLabel: {
-    color: '#CCCCCC',
+    color: THEME.hud.labelColor,
     fontSize: 10,
+    fontWeight: '700',
     textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   chipValue: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-    fontSize: 16,
+    color: THEME.hud.goldColor,
+    fontWeight: '800',
+    fontSize: 17,
+    textShadowColor: 'rgba(255,215,0,0.4)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
   },
   scoreRow: {
     alignItems: 'center',
@@ -188,33 +219,41 @@ const styles = StyleSheet.create({
   },
   scoreText: {
     color: '#FFD700',
-    fontSize: 22,
+    fontSize: 23,
     fontWeight: '800',
+    letterSpacing: 0.5,
     textShadowColor: 'rgba(255,215,0,0.6)',
     textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
+    textShadowRadius: 16,
   },
   boosterRow: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    marginTop: 8,
+    marginTop: 9,
   },
   boosterBtn: {
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 12,
+    backgroundColor: THEME.booster.bg,
+    borderRadius: 14,
     paddingHorizontal: 10,
-    paddingVertical: 6,
-    minWidth: 60,
+    paddingVertical: 7,
+    minWidth: 62,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
+    borderColor: THEME.booster.border,
+    shadowColor: THEME.booster.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 3,
   },
   boosterIcon: {
     fontSize: 20,
   },
   boosterLabel: {
-    color: '#FFFFFF',
+    color: '#D4B870',
     fontSize: 9,
     marginTop: 2,
+    fontWeight: '600',
+    letterSpacing: 0.3,
   },
 });

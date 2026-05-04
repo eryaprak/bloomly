@@ -6,6 +6,7 @@ import {
   Text,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useGameStore } from '@/stores/gameStore';
 import { usePlayerStore } from '@/stores/playerStore';
 import { loadLevel } from '@/constants/levelLoader';
@@ -43,7 +44,6 @@ export default function LevelScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [levelId]);
 
-  // Watch for phase changes
   useEffect(() => {
     if (!gameState) return;
     if (gameState.phase === 'complete') {
@@ -82,47 +82,41 @@ export default function LevelScreen() {
     setBloomColor(null);
   }, []);
 
-  // Derive bloomed vase colors for garden preview
   const bloomedColors: PetalColor[] = gameState?.vases
     .filter((v) => v.isBloomed)
     .map((v) => v.color) ?? [];
 
   if (!gameState) {
     return (
-      <View style={styles.bgBase}>
-        {/* Sky gradient layers */}
-        <View style={styles.skyTop} pointerEvents="none" />
-        <View style={styles.skyMid} pointerEvents="none" />
-        <View style={[styles.loading]}>
+      <LinearGradient
+        colors={['#1C4A8A', '#2E7A3A', '#1A3A0E']}
+        locations={[0, 0.6, 1]}
+        style={StyleSheet.absoluteFill}
+      >
+        <View style={styles.loading}>
           <Text style={styles.loadingText}>Loading...</Text>
         </View>
-      </View>
+      </LinearGradient>
     );
   }
 
   return (
     <View style={styles.bgBase}>
-      {/* === LAYERED GARDEN BACKGROUND === */}
+      {/* === LAYERED BOTANICAL BACKGROUND === */}
+      <LinearGradient
+        colors={['#1C4A8A', '#3A7AC8', '#6ABEAA', '#3A7A28', '#1A3A0E']}
+        locations={[0, 0.28, 0.55, 0.70, 1]}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
 
-      {/* 1. Deep sky gradient (top) */}
-      <View style={styles.skyTop} pointerEvents="none" />
-      {/* 2. Mid-sky glow (aurora-ish) */}
-      <View style={styles.skyMid} pointerEvents="none" />
-      {/* 3. Horizon band */}
-      <View style={styles.horizon} pointerEvents="none" />
-      {/* 4. Ground perspective layer */}
-      <View style={styles.ground} pointerEvents="none" />
-      {/* 5. Ground texture dots (perspectivic grid feel) */}
-      <View style={styles.groundPattern} pointerEvents="none">
-        {GROUND_DOTS.map((dot, i) => (
-          <View key={i} style={[styles.groundDot, { left: dot.x, top: dot.y, width: dot.r, height: dot.r, borderRadius: dot.r / 2, opacity: dot.o }]} />
-        ))}
-      </View>
-
-      {/* 6. Garden Bloom flowers (Skia, static / decorative) */}
-      <View style={styles.gardenLayer} pointerEvents="none">
+      {/* Garden Bloom flowers + decorative elements */}
+      <View style={StyleSheet.absoluteFill} pointerEvents="none">
         <GardenBackground bloomedColors={bloomedColors} />
       </View>
+
+      {/* Subtle board area shadow/vignette overlay */}
+      <View style={styles.vignetteOverlay} pointerEvents="none" />
 
       {/* === GAME UI === */}
       <SafeAreaView style={styles.safe}>
@@ -146,70 +140,14 @@ export default function LevelScreen() {
   );
 }
 
-// Pre-computed scattered ground dots for perspective grid
-const GROUND_DOTS: { x: number; y: number; r: number; o: number }[] = [
-  { x: 20,  y: 10, r: 3, o: 0.25 }, { x: 80,  y: 18, r: 4, o: 0.2 },
-  { x: 150, y: 8,  r: 3, o: 0.22 }, { x: 220, y: 15, r: 5, o: 0.18 },
-  { x: 290, y: 5,  r: 3, o: 0.2  }, { x: 350, y: 20, r: 4, o: 0.25 },
-  { x: 30,  y: 40, r: 6, o: 0.15 }, { x: 100, y: 50, r: 7, o: 0.12 },
-  { x: 180, y: 35, r: 5, o: 0.18 }, { x: 260, y: 48, r: 8, o: 0.1 },
-  { x: 320, y: 38, r: 6, o: 0.15 }, { x: 10,  y: 70, r: 9, o: 0.1 },
-  { x: 130, y: 75, r: 10,o: 0.08 }, { x: 240, y: 68, r: 9, o: 0.1 },
-  { x: 360, y: 72, r: 8, o: 0.1 },
-];
-
 const styles = StyleSheet.create({
   bgBase: {
     flex: 1,
-    backgroundColor: '#060314', // deep cosmic black
+    backgroundColor: '#1C4A8A',
   },
-  // Deep indigo/violet sky at top
-  skyTop: {
+  vignetteOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#0D0630',
-    bottom: '50%',
-  },
-  // Mid-sky softer purple glow
-  skyMid: {
-    ...StyleSheet.absoluteFillObject,
-    top: '20%',
-    bottom: '45%',
-    backgroundColor: '#1A0A50',
-    opacity: 0.7,
-  },
-  // Horizon warm glow line
-  horizon: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    top: '52%',
-    height: 40,
-    backgroundColor: '#3B1070',
-    opacity: 0.55,
-  },
-  // Ground — dark earthy green
-  ground: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    top: '55%',
-    backgroundColor: '#0E1A0A',
-  },
-  // Ground pattern container (bottom portion)
-  groundPattern: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    height: 120,
-  },
-  groundDot: {
-    position: 'absolute',
-    backgroundColor: '#2A4020',
-  },
-  gardenLayer: {
-    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.08)',
   },
   safe: {
     flex: 1,
@@ -225,6 +163,7 @@ const styles = StyleSheet.create({
   loadingText: {
     color: '#FFFFFF',
     fontSize: 18,
+    fontWeight: '600',
   },
   vaseSection: {
     paddingTop: 8,

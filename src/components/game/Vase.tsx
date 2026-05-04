@@ -1,6 +1,16 @@
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Canvas, Image, useImage, RoundedRect, Rect, Group, Shadow } from '@shopify/react-native-skia';
+import {
+  Canvas,
+  Image,
+  useImage,
+  RoundedRect,
+  Rect,
+  Group,
+  Shadow,
+  LinearGradient,
+  vec,
+} from '@shopify/react-native-skia';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -24,12 +34,21 @@ const VASE_SOURCES = [
 ];
 
 const COLOR_MAP: Record<PetalColor, string> = {
-  red:    '#FF4444',
-  pink:   '#FF69B4',
-  purple: '#A855F7',
-  yellow: '#FACC15',
-  green:  '#22C55E',
-  blue:   '#3B82F6',
+  red:    '#FF3B3B',
+  pink:   '#FF5BA8',
+  purple: '#9B40F0',
+  yellow: '#F5C000',
+  green:  '#18B850',
+  blue:   '#2E78F0',
+};
+
+const COLOR_LIGHT: Record<PetalColor, string> = {
+  red:    '#FF8888',
+  pink:   '#FFB0D0',
+  purple: '#C880FF',
+  yellow: '#FFE880',
+  green:  '#80EE80',
+  blue:   '#80C8FF',
 };
 
 function VaseItem({ vase, index }: { vase: VaseType; index: number }) {
@@ -37,42 +56,69 @@ function VaseItem({ vase, index }: { vase: VaseType; index: number }) {
   const image = useImage(imgSrc);
 
   const fillRatio = vase.capacity > 0 ? vase.filled / vase.capacity : 0;
-  const fillHeight = Math.round(fillRatio * (VASE_H - 20));
-  const fillY = VASE_H - 10 - fillHeight;
-  const fillColor = COLOR_MAP[vase.color];
+  const targetFillHeight = Math.round(fillRatio * (VASE_H - 22));
 
-  // Bloom pulse animation
-  const pulseScale = useSharedValue(1);
-  const pulseOpacity = useSharedValue(1);
+  // Animate fill height with spring
+  const animFillH = useSharedValue(targetFillHeight);
+  const prevFillH = useRef(targetFillHeight);
 
   useEffect(() => {
-    if (vase.isBloomed) {
-      pulseScale.value = withRepeat(
-        withSequence(
-          withTiming(1.08, { duration: 600 }),
-          withTiming(1, { duration: 600 }),
-        ),
-        -1,
-        false,
+    if (targetFillHeight !== prevFillH.current) {
+      prevFillH.current = targetFillHeight;
+      animFillH.value = withSpring(targetFillHeight, { damping: 14, stiffness: 160 });
+    }
+  }, [targetFillHeight]);
+
+  const fillColor = COLOR_MAP[vase.color];
+  const fillColorLight = COLOR_LIGHT[vase.color];
+
+  // Bloom burst + pulse animation
+  const pulseScale = useSharedValue(1);
+  const pulseOpacity = useSharedValue(1);
+  const wasBloomed = useRef(false);
+
+  useEffect(() => {
+    if (vase.isBloomed && !wasBloomed.current) {
+      wasBloomed.current = true;
+      // Burst
+      pulseScale.value = withSequence(
+        withSpring(1.22, { damping: 7, stiffness: 220 }),
+        withSpring(1.0, { damping: 10, stiffness: 180 }),
       );
-      pulseOpacity.value = withRepeat(
-        withSequence(
-          withTiming(0.7, { duration: 600 }),
-          withTiming(1, { duration: 600 }),
-        ),
-        -1,
-        false,
-      );
-    } else {
+      // Then settle into gentle pulse
+      setTimeout(() => {
+        pulseScale.value = withRepeat(
+          withSequence(
+            withTiming(1.1, { duration: 650 }),
+            withTiming(1.0, { duration: 650 }),
+          ),
+          -1,
+          false,
+        );
+        pulseOpacity.value = withRepeat(
+          withSequence(
+            withTiming(0.72, { duration: 650 }),
+            withTiming(1, { duration: 650 }),
+          ),
+          -1,
+          false,
+        );
+      }, 700);
+    } else if (!vase.isBloomed) {
+      wasBloomed.current = false;
       pulseScale.value = withSpring(1);
       pulseOpacity.value = withTiming(1);
     }
-  }, [vase.isBloomed, pulseScale, pulseOpacity]);
+  }, [vase.isBloomed]);
 
   const animStyle = useAnimatedStyle(() => ({
     transform: [{ scale: pulseScale.value }],
     opacity: pulseOpacity.value,
   }));
+
+  // Derive static fill values for canvas (Skia can't use shared values directly without AnimatedCanvas)
+  const fillH = targetFillHeight;
+  const fillY = VASE_H - 12 - fillH;
 
   if (!image) return null;
 
@@ -80,35 +126,48 @@ function VaseItem({ vase, index }: { vase: VaseType; index: number }) {
     <Animated.View style={[{ width: VASE_W, height: VASE_H }, animStyle]}>
       <Canvas style={{ width: VASE_W, height: VASE_H }}>
         <Group>
-          {/* Glow shadow for bloomed vase */}
+          {/* Bloom glow halo */}
           {vase.isBloomed && (
-            <RoundedRect x={2} y={2} width={VASE_W - 4} height={VASE_H - 4} r={8} color={fillColor} opacity={0}>
-              <Shadow dx={0} dy={0} blur={16} color={fillColor} />
+            <RoundedRect x={1} y={1} width={VASE_W - 2} height={VASE_H - 2} r={10} color={fillColor} opacity={0}>
+              <Shadow dx={0} dy={0} blur={24} color={fillColor} />
             </RoundedRect>
           )}
-          {/* Fill bar */}
-          {fillHeight > 0 && (
-            <Rect
-              x={6}
-              y={fillY}
-              width={VASE_W - 12}
-              height={fillHeight}
-              color={fillColor}
-              opacity={0.6}
-            />
+
+          {/* Gradient fill bar (light at top, rich at bottom) */}
+          {fillH > 0 && (
+            <Rect x={7} y={fillY} width={VASE_W - 14} height={fillH} color={fillColor} opacity={0.7}>
+              <LinearGradient
+                start={vec(VASE_W / 2, fillY)}
+                end={vec(VASE_W / 2, fillY + fillH)}
+                colors={[fillColorLight, fillColor]}
+              />
+            </Rect>
           )}
-          {/* Vase image on top */}
+
+          {/* Vase image */}
           <Image image={image} x={0} y={0} width={VASE_W} height={VASE_H} fit="contain" />
-          {/* Bloomed overlay */}
+
+          {/* Bloomed color overlay */}
           {vase.isBloomed && (
             <RoundedRect
-              x={2}
-              y={2}
-              width={VASE_W - 4}
-              height={VASE_H - 4}
-              r={8}
+              x={3}
+              y={3}
+              width={VASE_W - 6}
+              height={VASE_H - 6}
+              r={10}
               color={fillColor}
-              opacity={0.3}
+              opacity={0.42}
+            />
+          )}
+
+          {/* Top sheen highlight */}
+          {fillH > 6 && (
+            <Rect
+              x={10}
+              y={fillY + 2}
+              width={VASE_W - 28}
+              height={Math.min(8, fillH - 4)}
+              color="rgba(255,255,255,0.22)"
             />
           )}
         </Group>
