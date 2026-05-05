@@ -66,10 +66,6 @@ export default function BonusPopup({ bonusType, bonusGold, onDone }: BonusPopupP
     );
   }, [bonusType, bonusGold]);
 
-  if (!bonusType) return null;
-
-  const cfg = BONUS_CONFIG[bonusType];
-
   const animStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
     transform: [
@@ -77,6 +73,10 @@ export default function BonusPopup({ bonusType, bonusGold, onDone }: BonusPopupP
       { scale: scale.value },
     ],
   }));
+
+  if (!bonusType) return null;
+
+  const cfg = BONUS_CONFIG[bonusType];
 
   return (
     <Animated.View style={[styles.container, animStyle]}>

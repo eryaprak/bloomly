@@ -16,7 +16,6 @@ import Animated, {
   withRepeat,
   withSequence,
 } from 'react-native-reanimated';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { usePlayerStore } from '@/stores/playerStore';
@@ -202,11 +201,7 @@ export default function LevelCompleteScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <LinearGradient
-        colors={['#0D2A0A', '#1A4A10', '#0D3508', '#050D02']}
-        locations={[0, 0.35, 0.7, 1]}
-        style={StyleSheet.absoluteFill}
-      />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: '#0D2A0A' }]} />
 
       {/* Confetti */}
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
@@ -253,12 +248,7 @@ export default function LevelCompleteScreen() {
             style={styles.nextBtn}
             onPress={() => router.push(`/level/${levelId_ + 1}`)}
           >
-            <LinearGradient
-              colors={['#2E8C1A', '#1E6010']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={StyleSheet.absoluteFill}
-            />
+            <View style={[StyleSheet.absoluteFill, { backgroundColor: '#2E8C1A', borderRadius: 16 }]} />
             <Text style={styles.nextBtnText}>{t('nextLevel')} →</Text>
           </TouchableOpacity>
 

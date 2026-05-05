@@ -6,7 +6,6 @@ import {
   Text,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useGameStore } from '@/stores/gameStore';
 import { usePlayerStore } from '@/stores/playerStore';
 import { loadLevel } from '@/constants/levelLoader';
@@ -88,27 +87,18 @@ export default function LevelScreen() {
 
   if (!gameState) {
     return (
-      <LinearGradient
-        colors={['#1C4A8A', '#2E7A3A', '#1A3A0E']}
-        locations={[0, 0.6, 1]}
-        style={StyleSheet.absoluteFill}
-      >
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: '#1C4A8A' }]}>
         <View style={styles.loading}>
           <Text style={styles.loadingText}>Loading...</Text>
         </View>
-      </LinearGradient>
+      </View>
     );
   }
 
   return (
     <View style={styles.bgBase}>
       {/* === LAYERED BOTANICAL BACKGROUND === */}
-      <LinearGradient
-        colors={['#1C4A8A', '#3A7AC8', '#6ABEAA', '#3A7A28', '#1A3A0E']}
-        locations={[0, 0.28, 0.55, 0.70, 1]}
-        style={StyleSheet.absoluteFill}
-        pointerEvents="none"
-      />
+      {/* GardenBackground (Skia) draws full sky+ground gradient, no extra gradient needed */}
 
       {/* Garden Bloom flowers + decorative elements */}
       <View style={StyleSheet.absoluteFill} pointerEvents="none">

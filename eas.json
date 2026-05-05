@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 16.3.0"
+    "version": ">= 16.3.0",
+    "promptToConfigurePushNotifications": false
   },
   "build": {
     "development": {
@@ -18,12 +19,22 @@
       "distribution": "internal"
     },
     "production": {
+      "node": "22.22.2",
+      "env": {
+        "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
+      },
       "ios": {
         "image": "macos-sequoia-15.6-xcode-26.2"
       }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "ascApiKeyId": "P3X76F73BW",
+        "ascApiKeyIssuerId": "7338b935-1bc4-4357-adb3-9fcfe10c9438",
+        "ascApiKeyPath": "/Users/berkeryaprak/.appstoreconnect/private_keys/AuthKey_P3X76F73BW.p8"
+      }
+    }
   }
 }

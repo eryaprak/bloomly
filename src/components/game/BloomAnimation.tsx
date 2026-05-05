@@ -120,7 +120,7 @@ export default function BloomAnimation({ color, onComplete }: BloomAnimationProp
   }, [onComplete]);
 
   useEffect(() => {
-    runOnJS(triggerHaptic)();
+    triggerHaptic();
 
     // Screen flash
     flashOpacity.value = withSequence(
