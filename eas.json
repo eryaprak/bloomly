@@ -31,9 +31,14 @@
   "submit": {
     "production": {
       "ios": {
+        "ascAppId": "6767557874",
         "ascApiKeyId": "P3X76F73BW",
         "ascApiKeyIssuerId": "7338b935-1bc4-4357-adb3-9fcfe10c9438",
         "ascApiKeyPath": "/Users/berkeryaprak/.appstoreconnect/private_keys/AuthKey_P3X76F73BW.p8"
+      },
+      "android": {
+        "serviceAccountKeyPath": "/Users/berkeryaprak/play-publisher-key.json",
+        "track": "internal"
       }
     }
   }
