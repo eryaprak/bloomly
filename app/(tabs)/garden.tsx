@@ -10,6 +10,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import * as Haptics from 'expo-haptics';
 import { usePlayerStore } from '@/stores/playerStore';
 import { GARDEN_OBJECTS, type GardenObject } from '@/constants/gardenObjects';
 import '@/i18n';
@@ -26,6 +27,7 @@ export default function GardenScreen() {
   const totalStars = Object.values(stars).reduce((sum, s) => sum + s, 0);
 
   const handleUnlock = (obj: GardenObject) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
     if (totalStars >= obj.cost && !gardenObjects.includes(obj.name)) {
       unlockGardenObject(obj.name);
     }

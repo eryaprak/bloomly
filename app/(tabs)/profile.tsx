@@ -105,7 +105,7 @@ export default function ProfileScreen() {
 
           <View style={styles.settingDivider} />
 
-          <TouchableOpacity style={styles.settingRow} onPress={() => Linking.openURL('https://voxduru.com/privacy-policy')}>
+          <TouchableOpacity style={styles.settingRow} onPress={() => Linking.openURL('https://voxduru.com/privacy/bloomly')}>
             <Text style={styles.settingLabel}>{t('privacyPolicy')}</Text>
             <Text style={styles.settingArrow}>›</Text>
           </TouchableOpacity>

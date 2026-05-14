@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import * as Haptics from 'expo-haptics';
 import { usePlayerStore } from '@/stores/playerStore';
 import { TOTAL_LEVELS } from '@/constants/levelLoader';
 import '@/i18n';
@@ -59,6 +60,7 @@ export default function HomeScreen() {
               !level.isUnlocked && styles.lockedBtn,
             ]}
             onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
               if (level.isUnlocked) {
                 router.push(`/level/${level.id}`);
               }

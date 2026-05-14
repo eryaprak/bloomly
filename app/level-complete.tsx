@@ -18,6 +18,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import * as Haptics from 'expo-haptics';
 import { usePlayerStore } from '@/stores/playerStore';
 import '@/i18n';
 
@@ -168,6 +169,7 @@ export default function LevelCompleteScreen() {
 
   useEffect(() => {
     completeLevel(levelId_, stars);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
     addGold(rewardGold);
 
     bloomScale.value = withSpring(1, { damping: 8, stiffness: 160 });
