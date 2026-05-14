@@ -337,7 +337,7 @@
     }
   ],
   "dockSize": 7,
-  "maxMoves": 25,
+  "maxMoves": 48,
   "obstacles": [],
   "difficulty": 0.1
 }

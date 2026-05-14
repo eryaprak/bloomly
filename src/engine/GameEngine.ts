@@ -50,6 +50,7 @@ export function createGame(level: LevelConfig): GameState {
     score: 0,
     combo: 0,
     stars: 0,
+    movesLeft: level.maxMoves,
   };
 }
 
@@ -90,7 +91,7 @@ export function selectPetal(
     return { newState: state, result: failResult };
   }
 
-  // Ice layer handling
+  // Ice layer handling — counts as 1 move
   if (petal.iceLayer > 0) {
     // Reduce ice by 1; petal is NOT collected yet
     const newBoard = state.board.map((rowArr, ri) =>
@@ -104,11 +105,14 @@ export function selectPetal(
         ];
       }),
     );
+    const newMovesLeft = state.movesLeft - 1;
     const newState: GameState = {
       ...state,
       board: newBoard,
+      movesLeft: newMovesLeft,
     };
-    const gameOver = checkGameOver(newState);
+    const outOfMoves = newMovesLeft <= 0;
+    const gameOver = outOfMoves || checkGameOver(newState);
     return {
       newState: { ...newState, phase: gameOver ? 'failed' : 'playing' },
       result: {
@@ -208,6 +212,8 @@ export function selectPetal(
   }
   // ────────────────────────────────────────────────────────────────────────────
 
+  const newMovesLeft = state.movesLeft - 1;
+
   const newState: GameState = {
     ...state,
     board: newBoard,
@@ -216,10 +222,12 @@ export function selectPetal(
     score: state.score + scoreGain,
     combo,
     phase: 'playing',
+    movesLeft: newMovesLeft,
   };
 
   const levelComplete = checkLevelComplete(currentVases);
-  const gameOver = !levelComplete && checkGameOver(newState);
+  const outOfMoves = !levelComplete && newMovesLeft <= 0;
+  const gameOver = !levelComplete && (outOfMoves || checkGameOver(newState));
 
   const finalPhase = levelComplete ? 'complete' : gameOver ? 'failed' : 'playing';
   const stars = levelComplete ? calculateStars(combo) : state.stars;

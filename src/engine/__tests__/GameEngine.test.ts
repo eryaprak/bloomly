@@ -349,4 +349,47 @@ describe('GameEngine', () => {
     ];
     expect(checkLevelComplete(vases)).toBe(false);
   });
+
+  // 21. movesLeft decrements on each valid pick
+  test('movesLeft decrements on each valid petal pick', () => {
+    const level = makeSimpleLevel({ maxMoves: 10 });
+    const state = createGame(level);
+    expect(state.movesLeft).toBe(10);
+    const { newState } = selectPetal(state, 0, 0);
+    expect(newState.movesLeft).toBe(9);
+    const { newState: s2 } = selectPetal(newState, 0, 1);
+    expect(s2.movesLeft).toBe(8);
+  });
+
+  // 22. out-of-moves triggers phase 'failed'
+  test('out-of-moves triggers game over with failed phase', () => {
+    const level: LevelConfig = {
+      id: 99,
+      rows: 2,
+      cols: 2,
+      colors: ['red', 'blue'],
+      petals: [
+        makePetal('p1', 'red', 0, 0),
+        makePetal('p2', 'blue', 0, 1),
+        makePetal('p3', 'red', 1, 0),
+        makePetal('p4', 'blue', 1, 1),
+      ],
+      vases: [
+        { color: 'red', capacity: 6, filled: 0, isBloomed: false },
+        { color: 'blue', capacity: 6, filled: 0, isBloomed: false },
+      ],
+      dockSize: 7,
+      maxMoves: 2,
+      obstacles: [],
+      difficulty: 0,
+    };
+    let state = createGame(level);
+    expect(state.movesLeft).toBe(2);
+    ({ newState: state } = selectPetal(state, 0, 0));
+    expect(state.movesLeft).toBe(1);
+    const { newState: finalState, result } = selectPetal(state, 0, 1);
+    expect(finalState.movesLeft).toBe(0);
+    expect(result.gameOver).toBe(true);
+    expect(finalState.phase).toBe('failed');
+  });
 });

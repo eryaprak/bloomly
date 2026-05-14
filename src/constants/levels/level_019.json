@@ -314,7 +314,7 @@
     }
   ],
   "dockSize": 7,
-  "maxMoves": 20,
+  "maxMoves": 54,
   "obstacles": [
     "ice"
   ],

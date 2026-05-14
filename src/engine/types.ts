@@ -55,6 +55,7 @@ export interface GameState {
   score: number;
   combo: number;
   stars: 0 | 1 | 2 | 3;
+  movesLeft: number;    // remaining moves before game over
 }
 
 export interface MoveResult {

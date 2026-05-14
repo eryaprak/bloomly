@@ -59,6 +59,7 @@ export default function LevelScreen() {
       addFail(levelId);
       const vasesDone = gameState.vases.filter((v) => v.isBloomed).length;
       const totalVases = gameState.vases.length;
+      const reason = gameState.movesLeft <= 0 ? 'moves' : 'dock';
       setTimeout(() => {
         router.push({
           pathname: '/level-fail',
@@ -66,6 +67,7 @@ export default function LevelScreen() {
             levelId: String(levelId),
             vasesCompleted: String(vasesDone),
             totalVases: String(totalVases),
+            reason,
           },
         });
       }, 500);

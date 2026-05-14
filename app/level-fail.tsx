@@ -14,15 +14,17 @@ import '@/i18n';
 export default function LevelFailScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { levelId, vasesCompleted, totalVases } = useLocalSearchParams<{
+  const { levelId, vasesCompleted, totalVases, reason } = useLocalSearchParams<{
     levelId: string;
     vasesCompleted: string;
     totalVases: string;
+    reason?: string;
   }>();
 
   const levelId_ = parseInt(levelId ?? '1', 10);
   const vasesDone = parseInt(vasesCompleted ?? '0', 10);
   const totalVases_ = parseInt(totalVases ?? '1', 10);
+  const isOutOfMoves = reason === 'moves';
 
   const progressPct = totalVases_ > 0
     ? Math.min(0.95, Math.max(0.3, vasesDone / totalVases_))
@@ -35,8 +37,10 @@ export default function LevelFailScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.container}>
-        <Text style={styles.emoji}>💔</Text>
-        <Text style={styles.title}>{t('levelFail')}</Text>
+        <Text style={styles.emoji}>{isOutOfMoves ? '⏱️' : '💔'}</Text>
+        <Text style={styles.title}>
+          {isOutOfMoves ? t('outOfMoves') : t('levelFail')}
+        </Text>
 
         <Text style={styles.subtitle}>
           {t('vasesCompleted', { count: vasesDone })} / {totalVases_}

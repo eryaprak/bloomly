@@ -19,12 +19,16 @@
       "distribution": "internal"
     },
     "production": {
+      "autoIncrement": true,
       "node": "22.22.2",
       "env": {
         "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
       },
       "ios": {
         "image": "macos-sequoia-15.6-xcode-26.2"
+      },
+      "android": {
+        "buildType": "app-bundle"
       }
     }
   },

@@ -21,6 +21,8 @@ export default function HUD({ levelId, onBooster }: HUDProps) {
   const { lives, maxLives, countdown } = useLifeTimer();
 
   const score = gameState?.score ?? 0;
+  const movesLeft = gameState?.movesLeft ?? 0;
+  const maxMoves = gameState?.level.maxMoves ?? 0;
 
   const scoreFlash = useRef(new Animated.Value(1)).current;
   const prevScore = useRef(score);
@@ -34,6 +36,20 @@ export default function HUD({ levelId, onBooster }: HUDProps) {
       ]).start();
     }
   }, [score, scoreFlash]);
+
+  const movesFlash = useRef(new Animated.Value(1)).current;
+  const prevMoves = useRef(movesLeft);
+
+  useEffect(() => {
+    if (movesLeft !== prevMoves.current) {
+      prevMoves.current = movesLeft;
+      const isLow = movesLeft <= 5;
+      Animated.sequence([
+        Animated.timing(movesFlash, { toValue: isLow ? 1.5 : 1.2, duration: 100, useNativeDriver: true }),
+        Animated.spring(movesFlash, { toValue: 1, useNativeDriver: true }),
+      ]).start();
+    }
+  }, [movesLeft, movesFlash]);
 
   // ── Bonus popup state ──────────────────────────────────────────────────────
   const [activeBonusType, setActiveBonusType] = useState<BonusType>(null);
@@ -77,6 +93,19 @@ export default function HUD({ levelId, onBooster }: HUDProps) {
         <View style={styles.hudChip}>
           <Text style={styles.chipLabel}>{t('gold')}</Text>
           <Text style={styles.chipValue}>🌼 {gold}</Text>
+        </View>
+
+        <View style={[styles.hudChip, movesLeft <= 5 && styles.hudChipDanger]}>
+          <Text style={styles.chipLabel}>{t('moves')}</Text>
+          <Animated.Text
+            style={[
+              styles.chipValue,
+              movesLeft <= 5 && styles.movesLow,
+              { transform: [{ scale: movesFlash }] },
+            ]}
+          >
+            {movesLeft}
+          </Animated.Text>
         </View>
       </View>
 
@@ -212,6 +241,16 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(255,215,0,0.4)',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 6,
+  },
+  hudChipDanger: {
+    borderColor: 'rgba(255,80,80,0.7)',
+    backgroundColor: 'rgba(90,20,20,0.85)',
+  },
+  movesLow: {
+    color: '#FF5555',
+    textShadowColor: 'rgba(255,80,80,0.6)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
   },
   scoreRow: {
     alignItems: 'center',
