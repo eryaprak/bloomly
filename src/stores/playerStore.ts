@@ -1,4 +1,5 @@
 // KURAL: ASLA s => ({...}) kullanma. Her selector = s => s.fieldName
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createMMKV } from 'react-native-mmkv';
 import type { MMKV } from 'react-native-mmkv';
@@ -29,8 +30,20 @@ function saveToMMKV(key: string, value: unknown): void {
   }
 }
 
+/** Gold + diamonds: AsyncStorage (shop / economy Phase 3). MMKV used for other player fields. */
+const ECONOMY_STORAGE_KEY = '@bloomly/player/economy';
+
+async function persistPlayerEconomy(gold: number, diamonds: number): Promise<void> {
+  try {
+    await AsyncStorage.setItem(ECONOMY_STORAGE_KEY, JSON.stringify({ gold, diamonds }));
+  } catch {
+    // ignore write errors
+  }
+}
+
 interface PlayerStore {
   gold: number;
+  diamonds: number;
   lives: number;
   maxLives: number;
   streak: number;
@@ -42,6 +55,8 @@ interface PlayerStore {
   failCounts: Record<number, number>;
   addGold: (n: number) => void;
   spendGold: (n: number) => boolean;
+  addDiamonds: (n: number) => void;
+  spendDiamonds: (n: number) => boolean;
   loseLife: () => void;
   gainLife: () => void;
   updateStreak: () => void;
@@ -54,6 +69,7 @@ interface PlayerStore {
 
 const DEFAULT_STATE = {
   gold: 500,
+  diamonds: 50,
   lives: 5,
   maxLives: 5,
   streak: 0,
@@ -67,7 +83,8 @@ const DEFAULT_STATE = {
 
 function loadPersistedState() {
   return {
-    gold: loadFromMMKV('gold', DEFAULT_STATE.gold),
+    gold: DEFAULT_STATE.gold,
+    diamonds: DEFAULT_STATE.diamonds,
     lives: loadFromMMKV('lives', DEFAULT_STATE.lives),
     maxLives: DEFAULT_STATE.maxLives,
     streak: loadFromMMKV('streak', DEFAULT_STATE.streak),
@@ -84,17 +101,34 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
   ...loadPersistedState(),
 
   addGold: (n) => {
-    const newGold = get().gold + n;
-    saveToMMKV('gold', newGold);
+    const { gold, diamonds } = get();
+    const newGold = gold + n;
     set({ gold: newGold });
+    void persistPlayerEconomy(newGold, diamonds);
   },
 
   spendGold: (n) => {
-    const current = get().gold;
-    if (current < n) return false;
-    const newGold = current - n;
-    saveToMMKV('gold', newGold);
+    const { gold, diamonds } = get();
+    if (gold < n) return false;
+    const newGold = gold - n;
     set({ gold: newGold });
+    void persistPlayerEconomy(newGold, diamonds);
+    return true;
+  },
+
+  addDiamonds: (n) => {
+    const { gold, diamonds } = get();
+    const next = diamonds + n;
+    set({ diamonds: next });
+    void persistPlayerEconomy(gold, next);
+  },
+
+  spendDiamonds: (n) => {
+    const { gold, diamonds } = get();
+    if (diamonds < n) return false;
+    const next = diamonds - n;
+    set({ diamonds: next });
+    void persistPlayerEconomy(gold, next);
     return true;
   },
 
@@ -168,3 +202,28 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     set({ lastLifeTime: t });
   },
 }));
+
+export async function hydratePlayerEconomy(): Promise<void> {
+  try {
+    const raw = await AsyncStorage.getItem(ECONOMY_STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as { gold?: unknown; diamonds?: unknown };
+      const gold =
+        typeof parsed.gold === 'number' && Number.isFinite(parsed.gold)
+          ? Math.max(0, Math.floor(parsed.gold))
+          : DEFAULT_STATE.gold;
+      const diamonds =
+        typeof parsed.diamonds === 'number' && Number.isFinite(parsed.diamonds)
+          ? Math.max(0, Math.floor(parsed.diamonds))
+          : DEFAULT_STATE.diamonds;
+      usePlayerStore.setState({ gold, diamonds });
+      return;
+    }
+    const legacyGold = loadFromMMKV('gold', DEFAULT_STATE.gold);
+    const diamonds = DEFAULT_STATE.diamonds;
+    usePlayerStore.setState({ gold: legacyGold, diamonds });
+    await persistPlayerEconomy(legacyGold, diamonds);
+  } catch {
+    // keep in-memory defaults from create()
+  }
+}

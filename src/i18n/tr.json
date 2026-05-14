@@ -7,6 +7,7 @@
   "score": "Puan",
   "stars": "Yıldız",
   "gold": "Altın",
+  "diamonds": "Elmas",
   "lives": "Can",
   "streak": "Günlük Seri",
   "nextLevel": "Sonraki Seviye",
@@ -21,6 +22,7 @@
   "sound": "Ses",
   "language": "Dil",
   "about": "Hakkında",
+  "privacyPolicy": "Gizlilik Politikası",
   "totalLevels": "Tamamlanan Seviye",
   "totalStars": "Toplam Yıldız",
   "boosterScissors": "Makas",
@@ -37,5 +39,7 @@
   "rewardGold": "Altın Ödül",
   "unlockObject": "Aç",
   "notEnoughStars": "Yeterli yıldız yok",
-  "vasesCompleted": "{{count}} vazo çiçeklendi"
+  "vasesCompleted": "{{count}} vazo çiçeklendi",
+  "moves": "Hamle",
+  "outOfMoves": "Hamle bitti!"
 }

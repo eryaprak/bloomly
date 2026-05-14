@@ -41,6 +41,13 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{t('levelMap')}</Text>
+        <TouchableOpacity
+          style={styles.match3Btn}
+          onPress={() => router.push('/match3')}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.match3BtnTxt}>Match-3</Text>
+        </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={styles.grid}>
         {levels.map((level) => (
@@ -96,6 +103,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     alignItems: 'center',
+    gap: 12,
+  },
+  match3Btn: {
+    backgroundColor: '#7C3AED',
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#A78BFA',
+  },
+  match3BtnTxt: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+    fontSize: 14,
   },
   headerTitle: {
     color: '#FFFFFF',

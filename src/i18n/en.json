@@ -7,6 +7,7 @@
   "score": "Score",
   "stars": "Stars",
   "gold": "Gold",
+  "diamonds": "Diamonds",
   "lives": "Lives",
   "streak": "Day Streak",
   "nextLevel": "Next Level",
@@ -21,6 +22,7 @@
   "sound": "Sound",
   "language": "Language",
   "about": "About",
+  "privacyPolicy": "Privacy Policy",
   "totalLevels": "Levels Completed",
   "totalStars": "Total Stars",
   "boosterScissors": "Scissors",
@@ -37,5 +39,7 @@
   "rewardGold": "Gold Reward",
   "unlockObject": "Unlock",
   "notEnoughStars": "Not enough stars",
-  "vasesCompleted": "{{count}} vases bloomed"
+  "vasesCompleted": "{{count}} vases bloomed",
+  "moves": "Moves",
+  "outOfMoves": "Out of moves!"
 }

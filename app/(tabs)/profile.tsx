@@ -7,6 +7,7 @@ import {
   ScrollView,
   Switch,
   TouchableOpacity,
+  Linking,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { usePlayerStore } from '@/stores/playerStore';
@@ -16,6 +17,7 @@ import '@/i18n';
 export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
   const gold = usePlayerStore((s) => s.gold);
+  const diamonds = usePlayerStore((s) => s.diamonds);
   const streak = usePlayerStore((s) => s.streak);
   const stars = usePlayerStore((s) => s.stars);
   const currentLevel = usePlayerStore((s) => s.currentLevel);
@@ -60,6 +62,11 @@ export default function ProfileScreen() {
             <Text style={styles.goldValue}>{gold.toLocaleString()}</Text>
           </View>
 
+          <View style={styles.goldRow}>
+            <Text style={styles.goldLabel}>💎 {t('diamonds')}</Text>
+            <Text style={styles.goldValue}>{diamonds.toLocaleString()}</Text>
+          </View>
+
           <View style={styles.livesRow}>
             <Text style={styles.livesLabel}>
               {Array.from({ length: maxLives }).map((_, i) =>
@@ -98,8 +105,8 @@ export default function ProfileScreen() {
 
           <View style={styles.settingDivider} />
 
-          <TouchableOpacity style={styles.settingRow}>
-            <Text style={styles.settingLabel}>{t('about')}</Text>
+          <TouchableOpacity style={styles.settingRow} onPress={() => Linking.openURL('https://voxduru.com/privacy-policy')}>
+            <Text style={styles.settingLabel}>{t('privacyPolicy')}</Text>
             <Text style={styles.settingArrow}>›</Text>
           </TouchableOpacity>
         </View>
