@@ -16,8 +16,89 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.voxduru.bloomly",
+      "buildNumber": "16",
       "config": {
         "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "NSUserTrackingUsageDescription": "Bu uygulama size kişiselleştirilmiş reklamlar sunmak için reklam tanımlayıcınızı kullanmak istemektedir.",
+        "SKAdNetworkItems": [
+          {
+            "SKAdNetworkIdentifier": "cstr6suwn9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "4fzdc2evr5.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "2u9pt9hc89.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "4468km3ulz.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "bvpn9ufa9b.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "7ug5zh24hu.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "8s468mfl3y.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "9rd848q77x.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "c6k4g5qg8m.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "f38h382jlk.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "hs6bdukanm.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "klf5c3l5u5.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "ppxm28t8ap.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "prcb7njmu6.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "v9wttpbfk9.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "wzmmz9fp6w.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "yclnxrl5pm.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "ydx93a7ass.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "5a6flpkh64.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "32z4fx6l9h.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "3rd42ekr43.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "3sh42y64q3.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "578prtvx9j.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "5l3tpt7t6e.skadnetwork"
+          },
+          {
+            "SKAdNetworkIdentifier": "9nlxag3b7a.skadnetwork"
+          }
+        ]
       }
     },
     "android": {
@@ -28,6 +109,7 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.voxduru.bloomly",
+      "versionCode": 6,
       "permissions": [
         "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.POST_NOTIFICATIONS",
@@ -47,7 +129,20 @@
         }
       ],
       "expo-font",
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-4748306445734022~4774749919",
+          "iosAppId": "ca-app-pub-4748306445734022~6139352766"
+        }
+      ],
+      [
+        "expo-tracking-transparency",
+        {
+          "userTrackingPermission": "Bu uygulama size kişiselleştirilmiş reklamlar sunmak için reklam tanımlayıcınızı kullanmak istemektedir."
+        }
+      ]
     ],
     "extra": {
       "router": {},
