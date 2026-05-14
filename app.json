@@ -16,7 +16,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.voxduru.bloomly",
-      "buildNumber": "17",
+      "buildNumber": "23",
       "config": {
         "usesNonExemptEncryption": false
       },
@@ -98,7 +98,8 @@
           {
             "SKAdNetworkIdentifier": "9nlxag3b7a.skadnetwork"
           }
-        ]
+        ],
+        "NSUserNotificationsUsageDescription": "Bloomly will send you reminders to keep your garden growing and lives full."
       }
     },
     "android": {
@@ -142,7 +143,8 @@
         {
           "userTrackingPermission": "Bu uygulama size kişiselleştirilmiş reklamlar sunmak için reklam tanımlayıcınızı kullanmak istemektedir."
         }
-      ]
+      ],
+      "expo-notifications"
     ],
     "extra": {
       "router": {},
