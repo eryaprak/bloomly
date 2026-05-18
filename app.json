@@ -20,7 +20,16 @@
       "config": {
         "usesNonExemptEncryption": false
       },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
+          }
+        ]
+      },
       "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
         "NSUserTrackingUsageDescription": "Bu uygulama size kişiselleştirilmiş reklamlar sunmak için reklam tanımlayıcınızı kullanmak istemektedir.",
         "SKAdNetworkItems": [
           {
