@@ -14,6 +14,7 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "icon": "./assets/icon.png",
       "supportsTablet": true,
       "bundleIdentifier": "com.voxduru.bloomly",
       "buildNumber": "24",
@@ -156,6 +157,8 @@
       "expo-notifications"
     ],
     "extra": {
+      "privacyPolicyUrl": "https://voxduru.com/privacy/bloomly",
+      "termsOfServiceUrl": "https://voxduru.com/terms",
       "router": {},
       "eas": {
         "projectId": "25f9301f-6a51-40a7-b5a1-fb504e42af22"
